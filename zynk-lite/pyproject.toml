@@ -7,7 +7,7 @@ name = "zynk-lite"
 dynamic = ["version"]
 description = ''
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.6"
 keywords = []
 authors = [
   { name = "Guille", email = "guilleleiratemes@gmail.com" },
@@ -26,9 +26,9 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Documentation = "https://github.com/Guille/zynk-lite#readme"
-Issues = "https://github.com/Guille/zynk-lite/issues"
-Source = "https://github.com/Guille/zynk-lite"
+Documentation = "https://github.com/Guille-ux/ZynkLite#readme"
+Issues = "https://github.com/Guille-ux/ZynkLite/issues"
+Source = "https://github.com/Guille-ux/ZynkLite"
 
 [tool.hatch.version]
 path = "src/zynk_lite/__about__.py"
