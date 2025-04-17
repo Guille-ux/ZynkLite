@@ -117,7 +117,7 @@ class ZynkLLexer:
         elif char=="\n":
             self.column = 1
             self.line += 1
-        elif char in ("\t", " "):
+        elif char in ("\t", " ", "\r"):
             pass
         elif char=="(":
             self.add_token(tokens.TokenType.LPAREN, "(")
@@ -157,14 +157,27 @@ class ZynkLLexer:
             self.add_token(tokens.TokenType.COLON, ":")
         elif char==".":
             self.add_token(tokens.TokenType.DOT, ".")
+        # de doble comprobación
         elif char=="!":
-            pass # + complejo
+            if self.match("="):
+                self.add_token(tokens.TokenType.BANG_EQUAL, "!=")
+            else:
+                self.add_token(tokens.TokenType.BANG, "!")
         elif char=="=":
-            pass # + complejo
+            if self.match("="):
+                self.add_token(tokens.TokenType.EQUAL_EQUAL, "==")
+            else:
+                self.add_token(tokens.TokenType.EQUAL, "=")
         elif char=="<":
-            pass # + complejo
+            if self.match("="):
+                self.add_token(tokens.TokenType.LESS_EQUAL, "<=")
+            else:
+                self.add_token(tokens.TokenType.LESS, "<")
         elif char==">":
-            pass # + complejo
+            if self.match("="):
+                self.add_token(tokens.TokenType.GREATER_EQUAL, ">=")
+            else:
+                self.add_token(tokens.TokenType.GREATER, ">")
         elif char==",":
             self.add_token(tokens.TokenType.COMMA, ",")
 
