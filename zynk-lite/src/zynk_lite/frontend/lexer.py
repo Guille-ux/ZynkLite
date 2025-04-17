@@ -114,6 +114,11 @@ class ZynkLLexer:
         char = self.advance()
         if self.skip_comment():
             pass
+        elif char=="\n":
+            self.column = 1
+            self.line += 1
+        elif char in ("\t", " "):
+            pass
         elif char=="(":
             self.add_token(tokens.TokenType.LPAREN, "(")
         elif char==")":
@@ -127,7 +132,8 @@ class ZynkLLexer:
         elif char=="]":
             self.add_token(tokens.TokenType.RBRACKET, "]")
         elif char==";":
-            self.add_token(tokens.TokenType.SEMICOLON, ";") # SEMICOLON 
+            self.add_token(tokens.TokenType.SEMICOLON, ";") # SEMICOLON
+        # VALORES
         elif char=='"': # String's
             lexem = self.string_lex()
             value = lexem[1:-1]
@@ -137,6 +143,31 @@ class ZynkLLexer:
             lexem = self.source[self.start:self.current]
             value = float(lexem)
             self.add_token(tokens.TokenType.FLOAT, lexem, value)
+        
+        # SIMBOLOS xD
+        elif char=="*":
+            self.add_token(tokens.TokenType.STAR, "*")
+        elif char=="/":
+            self.add_token(tokens.TokenType.SLASH, "/")
+        elif char=="-":
+            self.add_token(tokens.TokenType.MINUS, "-")
+        elif char=="+":
+            self.add_token(tokens.TokenType.PLUS, "+")
+        elif char==":":
+            self.add_token(tokens.TokenType.COLON, ":")
+        elif char==".":
+            self.add_token(tokens.TokenType.DOT, ".")
+        elif char=="!":
+            pass # + complejo
+        elif char=="=":
+            pass # + complejo
+        elif char=="<":
+            pass # + complejo
+        elif char==">":
+            pass # + complejo
+        elif char==",":
+            self.add_token(tokens.TokenType.COMMA, ",")
+
         # un monton más....
         else:
             self.error = True
