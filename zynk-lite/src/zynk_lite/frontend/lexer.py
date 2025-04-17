@@ -52,3 +52,46 @@ class ZynkLLexer:
     def add_token(self, tipo, lexem="", value=None):
         self.tokens.append(tokens.Token(tipo, lexem, value, self.line, self.column))
     # utilidades lvl. 1 acabadas
+    
+    # Utilidades lvl2
+    def skip_comment(self):
+        if self.prev()=="#":
+            char = self.peek()
+            while not self.is_at_end():
+                if char == "\n":
+                    break
+                char = self.advance()
+            return True
+        return False
+    def num_lexer(self):
+        consumed = False
+        while not self.is_at_end():
+            char = self.advance()
+            if consumed:
+                if not char.isdigit():
+                    self.current -= 1
+                    break
+            else:
+                if char==".":
+                    consumed = True
+                elif char.isdigit():
+                    pass
+                else:
+                    self.current -= 1
+                    break
+        return consumed
+    def string_lex(self):
+        start = self.current - 1
+        while not self.is_at_end():
+            char  = self.advance()
+            if char == '"':
+                break
+        return self.source[start:self.current]
+    def identifier_lex(self):
+        start = self.current-1
+        while not self.is_at_end():
+            char = self.advance()
+            if char not in self.var_set:
+                self.current -= 1
+                break
+        return self.source[start:self.current]
