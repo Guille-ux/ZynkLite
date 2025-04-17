@@ -179,7 +179,21 @@ class ZynkLLexer:
             else:
                 self.add_token(tokens.TokenType.GREATER, ">")
         elif char==",":
+        # BUILT-IN
             self.add_token(tokens.TokenType.COMMA, ",")
+        elif self.match_sequence("print"):
+            self.add_token(tokens.TokenType.PRINT, "print")
+        elif self.match_sequence("input"):
+            self.add_token(tokens.TokenType.INPUT, "input")
+        elif self.match_sequence("import"):
+            self.add_token(tokens.TokenType.IMPORT, "import")
+        # Other Types
+        elif self.match_sequence("null"):
+            self.add_token(tokens.TokenType.NULL, "null")
+        elif self.match_sequence("true"):
+            self.add_token(tokens.TokenType.BOOL, "true", True)
+        elif self.match_sequence("false"):
+            self.add_token(tokens.TokenType.BOOL, "false", False)
 
         # un monton más....
         else:

@@ -18,7 +18,7 @@ class TokenType:
 
     # Tipos de Datos
     FLOAT = 10 # números de punto flotante
-    ARRAY = 11 # una lista bro
+    ARRAY = 11 # una lista bro, como los hare???
         # STRUCTS ¿?
     STRING = 12
     NULL = 13
