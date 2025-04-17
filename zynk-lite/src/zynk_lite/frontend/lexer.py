@@ -157,6 +157,8 @@ class ZynkLLexer:
             self.add_token(tokens.TokenType.COLON, ":")
         elif char==".":
             self.add_token(tokens.TokenType.DOT, ".")
+        elif char=="^":
+            self.add_token(tokens.TokenType.XOR, "^")
         # de doble comprobación
         elif char=="!":
             if self.match("="):
@@ -194,6 +196,34 @@ class ZynkLLexer:
             self.add_token(tokens.TokenType.BOOL, "true", True)
         elif self.match_sequence("false"):
             self.add_token(tokens.TokenType.BOOL, "false", False)
+        
+        # Keywords
+        elif self.match_sequence("func"):
+            self.add_token(tokens.TokenType.FUNC, "func")
+        elif self.match_sequence("var"):
+            self.add_token(tokens.TokenType.VAR, "var")
+        elif self.match_sequence("list"):
+            self.add_token(tokens.TokenType.LIST, "list")
+        elif self.match_sequence("call"):
+            self.add_token(tokens.TokenType.CALL, "call")
+        elif self.match_sequence("to"):
+            self.add_token(tokens.TokenType.TO, "to")
+        elif self.match_sequence("and"):
+            self.add_token(tokens.TokenType.AND, "and")
+        elif self.match_sequence("not"):
+            self.add_token(tokens.TokenType.BANG, "not")
+        elif self.match_sequence("or"):
+            self.add_token(tokens.TokenType.OR, "or")
+        elif self.match_sequence("while"):
+            self.add_token(tokens.TokenType.WHILE, "while")
+        elif self.match_sequence("for"):
+            self.add_token(tokens.TokenType.FOR, "for")
+        elif self.match_sequence("return"):
+            self.add_token(tokens.TokenType.RETURN, "return")
+        elif self.match_sequence("if"):
+            self.add_token(tokens.TokenType.IF, "if")
+        elif self.match_sequence("else"):
+            self.add_token(tokens.TokenType.ELSE, "else")
 
         # un monton más....
         else:
