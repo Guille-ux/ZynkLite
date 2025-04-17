@@ -69,6 +69,8 @@ class ZynkLLexer:
         return False
     def num_lexer(self):
         consumed = False
+        self.current -= 1
+        self.column -= 1
         while not self.is_at_end():
             char = self.advance()
             if consumed:
@@ -87,7 +89,7 @@ class ZynkLLexer:
     def string_lex(self):
         start = self.current - 1
         while not self.is_at_end():
-            char  = self.advance()
+            char = self.advance()
             if char == '"':
                 break
         return self.source[start:self.current]
@@ -120,6 +122,21 @@ class ZynkLLexer:
             self.add_token(tokens.TokenType.LBRACE, "{") # ME ABURRO, es muy repetitivo
         elif char=="}":
             self.add_token(tokens.TokenType.RBRACE, "}")
+        elif char=="[":
+            self.add_token(tokens.TokenType.LBRACKET, "[")
+        elif char=="]":
+            self.add_token(tokens.TokenType.RBRACKET, "]")
+        elif char==";":
+            self.add_token(tokens.TokenType.SEMICOLON, ";") # SEMICOLON 
+        elif char=='"': # String's
+            lexem = self.string_lex()
+            value = lexem[1:-1]
+            self.add_token(tokens.TokenType.STRING, lexem, value)
+        elif char.isdigit(): # numbers
+            self.num_lexer()
+            lexem = self.source[self.start:self.current]
+            value = float(lexem)
+            self.add_token(tokens.TokenType.FLOAT, lexem, value)
         # un monton más....
         else:
             self.error = True
