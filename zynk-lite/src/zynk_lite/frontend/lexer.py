@@ -6,9 +6,10 @@ from .. import errors
 from .. import tokens
 
 class ZynkLLexer:
-    def __init__(self, source):
+    def __init__(self, source, debug=False):
+        self.debug = debug
         self.source = source # código fuente
-        self.current = 1 # posición actual + 1
+        self.current = 0 # posición actual + 1
         self.start = 0 # donde empieza el token actual
         self.line = 1
         self.column = 1
@@ -59,6 +60,9 @@ class ZynkLLexer:
             char = self.peek()
             while not self.is_at_end():
                 if char == "\n":
+                    self.line += 1
+                    self.column = 1
+                    self.advance()
                     break
                 char = self.advance()
             return True
@@ -95,3 +99,33 @@ class ZynkLLexer:
                 self.current -= 1
                 break
         return self.source[start:self.current]
+    
+    # eso solo fueron utilidades, ahora llega el verdadero escaneo LEXER LVL 3
+
+    def scan(self): # ESCANEO
+        while not self.is_at_end():
+            self.start = self.current
+            self.scan_token()
+        self.add_token(tokens.TokenType.EOF) # añadir final de archivo al final
+        return self.tokens
+    def scan_token(self):
+        char = self.advance()
+        if self.skip_comment():
+            pass
+        elif char=="(":
+            self.add_token(tokens.TokenType.LPAREN, "(")
+        elif char==")":
+            self.add_token(tokens.TokenType.RPAREN, ")")
+        elif char=="{":
+            self.add_token(tokens.TokenType.LBRACE, "{") # ME ABURRO, es muy repetitivo
+        elif char=="}":
+            self.add_token(tokens.TokenType.RBRACE, "}")
+        # un monton más....
+        else:
+            self.error = True
+            lerror = self.throw("Unexpected Token")
+            lerror.print_error()
+            if self.debug:
+                print(f"[!] {lerror} [!]")
+    def throw(self, msg): # Ayuditas del pedro sánchez
+        return errors.ZynkError(self.line, self.column, msg)
