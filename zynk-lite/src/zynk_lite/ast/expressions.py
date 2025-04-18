@@ -152,6 +152,14 @@ class ForExpr(Expr):
     def __str__(self):
         return f"[ For : {self.initialized} : {self.condition} : {self.increment} : {self.body} ]"
     
+class BlockExpr(Expr): # casí me olvido de añadir esto, parece insignificante, pero mejora todo muchisimo
+    def __init__(self, body):
+        self.body = body
+    def accept(self, visitor):
+        return visitor.visit_block(self)
+    def __str__(self):
+        return f"[ Block : {self.body} ]"
+
 # FUTURO ¿?
 """
 class ArrayDef(Expr):

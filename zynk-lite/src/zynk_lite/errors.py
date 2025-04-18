@@ -16,3 +16,17 @@ class ZynkError(Exception):
         return self.msg
     def __repr__(self):
         return self.msg
+    
+class EvalError(ZynkError): # jajajja añadiendo un error nuevo, quien diria que hay que programar errores ¿no? xD
+    def __init__(self, nexpr, error):
+        self.nexpr = nexpr
+        self.error = error
+        self.column = None
+        super().__init__(self.nexpr, self.column, self.error)
+
+class ParserError(ZynkError): # otro tipo de error nuevo, luego añadire errores más especificos, de momento me es suficiente así, pensar que pare de hacer un lenguaje de programación para hacer otro, lo bueno es que ahora voy mucho más rápido
+    def __init__(self, token, token_pos, error):
+        self.token = token
+        self.pos = token_pos
+        self.error = error
+        super().__init__(token, token_pos, error)
