@@ -166,7 +166,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         self.eval(expr.initialized)
         while self.eval(expr.condition):
             self.eval(expr.body)
-            self.eval(increment)
+            self.eval(expr.increment)
         return None
 
         
