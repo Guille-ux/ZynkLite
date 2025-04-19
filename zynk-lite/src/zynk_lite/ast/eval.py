@@ -8,16 +8,22 @@ from . import zenv
 from ..frontend import lexer
 from . import parser
 import os
+from pathlib import Path
 
 class Visitor:
     def __init__(self):
         raise NotImplementedError()
 
 class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es maravilloso
-    def __init__(self, enclosing=None, debug=False, extension=".zl"):
+    def __init__(self, standard_lib_path=None, enclosing=None, debug=False, extension=".zl"):
         self.extension = extension
         self.debug = debug
         self.env = zenv.Enviroment(enclosing)
+        if standard_lib_path is None:
+            project_root = Path(__file__).resolve().parent.parent
+            self.stdlib_path = project_root / "lib"
+        else:
+            self.stdlib_path = standard_lib_path
     def subenv(self):
         new = zenv.Enviroment(self.env)
         return new
@@ -120,15 +126,41 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             promp = str(self.eval(expr.expression))
         return input(prompt)
     def visit_import(self, expr):
+        cwdir = os.getcwd()
         filename = expr.name + self.extension
+        if self.debug:
+            print(f"[+] Trying to Load {expr.name} from current work dir [+]")
         if filename in os.listdir():
-            pass
+            filepath = os.path.join(cwdir, filename)
+            if os.path.isfile(filepath):
+                if self.debug:
+                    print(f"[+] Loading module {expr.name} from {filepath} [+]")
+            else:
+                raise RuntimeError(f"Error : {filepath} is not a file")
         else:
-            os.pwd()
-        with open(filename, "r") as f:
+            if self.debug:
+                print("[+] Trying to Load from Standard Library [+]")
+            filepath = os.path.join(self.stdlib_path, filename)
+        with open(filepath, "r") as f:
+            if self.debug:
+                print(f"[+] Loading {expr.name} from {filepath} [+]")
             lexer = lexer.ZynkLLexer(f.read(), self.debug)
             tokens = lexer.scan()
-            parser = 
+            if self.debug:
+                print(f"[+] Analysis of {expr.name} module completed [+]")
+            parser = parser.ZynkLParser(tokens, self.debug)
+            parsed = parser.parse()
+            if self.debug:
+                print(f"[+] Module Parsed [+]")
+                print(f"[+] Evaluating [+]")
+            self.new_subenv()
+            for expression in parsed:
+                self.eval(expression)
+            module = zexpr.Module(expr.name, self.env)
+            self.undo()
+            self.env.define(expr.name, module)
+            return None
+
     def visit_for(self, expr):
         self.new_subenv()
         self.eval(expr.initialized)
