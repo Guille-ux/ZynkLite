@@ -5,13 +5,17 @@
 from .. import errors
 from . import expressions as zexpr
 from . import zenv
+from ..frontend import lexer
+from . import parser
+import os
 
 class Visitor:
     def __init__(self):
         raise NotImplementedError()
 
 class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es maravilloso
-    def __init__(self, enclosing=None, debug=False):
+    def __init__(self, enclosing=None, debug=False, extension=".zl"):
+        self.extension = extension
         self.debug = debug
         self.env = zenv.Enviroment(enclosing)
     def subenv(self):
@@ -116,7 +120,15 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             promp = str(self.eval(expr.expression))
         return input(prompt)
     def visit_import(self, expr):
-        raise NotImplementedError("Wait")
+        filename = expr.name + self.extension
+        if filename in os.listdir():
+            pass
+        else:
+            os.pwd()
+        with open(filename, "r") as f:
+            lexer = lexer.ZynkLLexer(f.read(), self.debug)
+            tokens = lexer.scan()
+            parser = 
     def visit_for(self, expr):
         self.new_subenv()
         self.eval(expr.initialized)

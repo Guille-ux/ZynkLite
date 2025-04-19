@@ -5,3 +5,7 @@
 from .. import tokens
 from .. import errors
 
+class ZynkLParser:
+    def __init__(self, tokens, debug):
+        self.debug = debug
+        self.tokens = tokens

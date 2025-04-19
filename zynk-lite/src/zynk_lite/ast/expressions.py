@@ -175,6 +175,23 @@ class ZynkFunc:
         result = interpreter.eval(self.declaration.body)
         interpreter.undo()
         return result
+class Module:
+    def __init__(self, name, env):
+        self.name = name
+        self.env = env
+class MIdentifier(Identifier):
+    def __init__(self, module, name)
+        self.module = module
+        super().__init__(name)
+    def accept(self, visitor):
+        visitor.switch(visitor.env.get(self.name).env)
+        try:
+            return super().accept(visitor)
+        finally:
+            visitor.undo()
+    def __str__(self):
+        return f"[ Module : {self.module} : [ {self.name} ] ]"
+
 
 
 
