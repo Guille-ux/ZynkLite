@@ -4,6 +4,9 @@
 
 # clase base para definir expresiones
 
+from . import zenv
+from .. import errors
+
 class Expr:
     def __init__(self):
         raise NotImplementedError()
@@ -159,6 +162,21 @@ class BlockExpr(Expr): # casí me olvido de añadir esto, parece insignificante,
         return visitor.visit_block(self)
     def __str__(self):
         return f"[ Block : {self.body} ]"
+    
+class ZynkFunc:
+    def __init__(self, declaration):
+        self.declaration = declaration
+    def call(self, interpreter, args):
+        env = interpreter.subenv()
+
+        for i in range(len(self.declaration.params)):
+            env.define(self.declaration.params[i], args[i])
+        interpreter.switch(env)
+        result = interpreter.eval(self.declaration.body)
+        interpreter.undo()
+        return result
+
+
 
 # FUTURO ¿?
 """

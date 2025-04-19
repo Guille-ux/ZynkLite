@@ -3,15 +3,26 @@
 # SPDX-License-Identifier: GPLv3
 
 from .. import errors
-from . import expressions as expr
+from . import expressions as zexpr
+from . import zenv
 
 class Visitor:
     def __init__(self):
         raise NotImplementedError()
 
 class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es maravilloso
-    def __init__(self, debug=False):
+    def __init__(self, enclosing=None, debug=False):
         self.debug = debug
+        self.env = zenv.Enviroment(enclosing)
+    def subenv(self):
+        new = zenv.Enviroment(self.env)
+        return new
+    def new_subenv(self):
+        self.switch(self.subenv())
+    def switch(self, env):
+        self.env = env
+    def undo(self):
+        self.env = self.env.enclosing
     def eval(self, expr):
         return expr.accept(self)
     def visit_literal(self, expr):
@@ -56,6 +67,58 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             if self.debug:
                 raise error
             error.print_error()
+    def visit_grouping(self, expr):
+        return expr.expression.accept()
+    def visit_var_definitions(self, expr):
+        self.env.define(expr.name, self.eval(expr.expression))
+        return None
+    def visit_identifier(self, expr):
+        return self.env.get(expr.name)
+    def visit_func_definition(self, expr):
+        function = zexpr.ZynkFunc(expr)
+        self.env.define(expr.name, function)
+        return None
+    def visit_call_function(self, expr):
+        function = self.env.get(expr.name)
+        if not hasattr(function, "call"):
+            raise RuntimeError(f"Error : '{expr.name} is not a function!")
+        args = []
+        for arg in expr.args:
+            args.append(self.eval(arg))
+        self.env.define(expr.to, function.call(args))
+        return None
+    def visit_block(self, expr):
+        self.new_subenv()
+        try:
+            result = None
+            for stmt in expr.body:
+                result = self.eval(stmt)
+            return result
+        finally:
+            self.undo()
+    def visit_if(self, expr):
+        if self.eval(expr.condition):
+            return self.eval(expr.then)
+        elif expr.else_branch is not None:
+            return self.eval(expr.else_branch)
+        return None
+    def visit_while(self, expr):
+        while self.eval(expr.condition):
+            self.eval(expr.body)
+        return None
+    def visit_print(self, expr):
+        value = self.eval(expr.value)
+        print(value)
+        return None
+    def visit_input(self, expr):
+        prompt = ""
+        if expr.expression is not None:
+            promp = str(self.eval(expr.expression))
+        return input(prompt)
+    # wow, añadi muchos metodos, me falta algo para arrays, aunque eso tambien en el lexer y expresiones deberia montar bucles for pues todavia no existen tambien algo para imports
+    # esto es sencillo, creo que más tarde copiare esto pero en vez de interpretar que compile, estaria bien, de paso uso patrones de diseño
+    # el funcionamiento de ZynkLite va a hacer que me replantee mejoras en ZynkPy
+
 
 # sodio, yo montando un lenguaje de programación desde 0 para que tengais video xD, viva la república y viva la Asexualidad! :)
 # realmente no creo que sea sano programar de 23:54 hasta 05:00 creo que deberia dormir más, pero bueno, programar es programar!
