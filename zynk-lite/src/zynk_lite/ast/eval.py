@@ -115,6 +115,17 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         if expr.expression is not None:
             promp = str(self.eval(expr.expression))
         return input(prompt)
+    def visit_import(self, expr):
+        raise NotImplementedError("Wait")
+    def visit_for(self, expr):
+        self.new_subenv()
+        self.eval(expr.initialized)
+        while self.eval(expr.condition):
+            self.eval(expr.body)
+            self.eval(increment)
+        return None
+
+        
     # wow, añadi muchos metodos, me falta algo para arrays, aunque eso tambien en el lexer y expresiones deberia montar bucles for pues todavia no existen tambien algo para imports
     # esto es sencillo, creo que más tarde copiare esto pero en vez de interpretar que compile, estaria bien, de paso uso patrones de diseño
     # el funcionamiento de ZynkLite va a hacer que me replantee mejoras en ZynkPy
