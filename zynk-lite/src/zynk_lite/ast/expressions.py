@@ -180,7 +180,7 @@ class Module:
         self.name = name
         self.env = env
 class MIdentifier(Identifier):
-    def __init__(self, module, name)
+    def __init__(self, module, name):
         self.module = module
         super().__init__(name)
     def accept(self, visitor):
