@@ -125,7 +125,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         if expr.expression is not None:
             promp = str(self.eval(expr.expression))
         return input(prompt)
-    def visit_import(self, expr):
+    def visit_import(self, expr): # esto a sido una tortura
         cwdir = os.getcwd()
         filename = expr.name + self.extension
         if self.debug:
