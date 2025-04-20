@@ -68,6 +68,11 @@ class AlgebraicParser: # tremend descenso recursivo
         if self.eat_more(tokens.TokenType.MINUS, tokens.TokenType.BANG):
             op = self.prev().lexem
             return zexpr.Unary(op, self.parse_factor())
+        elif self.eat(tokens.TokenType.LPAREN): # ya me olvidaba de esto
+            expr = self.parse_logic()
+            if not self.eat(tokens.TokenType.RPAREN):
+                raise SyntaxError("Expected closing parenthesis")
+            return expr
         elif self.eat_more(tokens.TokenType.STRING, tokens.TokenType.FLOAT, tokens.TokenType.BOOL, tokens.TokenType.NULL):
             return zexpr.Literal(self.prev.value)
         elif self.eat(tokens.TokenType.IDENTIFIER):
@@ -138,7 +143,7 @@ class ZynkLParser:
             return zexpr.Identifier(self.prev().lexem)
     def algebraic(self, toks):
         psd = AlgebraicParser(toks, self.debug)
-        return psd.scan()
+        return psd.parse()
     def parse(self):
         statements = []
         while not self.is_at_end():
@@ -148,11 +153,10 @@ class ZynkLParser:
         return statements
     def parse_stmt(self):
         tok = self.actual()
+        self.advance()
         if tok.type == tokens.TokenType.IMPORT:
-            self.advance()
             return self.parse_import()
         elif tok.type == tokens.TokenType.IDENTIFIER:
-            self.advance()
             first = self.parse_identifier()
             if self.eat(tokens.TokenType.EQUAL):
                 expression = self.parse_expression()
@@ -170,7 +174,6 @@ class ZynkLParser:
 
         elif tok.type == tokens.TokenType.FUNC:
             return self.parse_func()
-        
         elif tok.type == tokens.TokenType.VAR:
             self.advance()
             if self.eat(tokens.TokenType.IDENTIFIER):
@@ -188,8 +191,43 @@ class ZynkLParser:
         elif tok.type == tokens.TokenType.SEMICOLON:
             self.advance()
             return None
+        elif tok.type == tokens.TokenType.PRINT:
+            expression = self.parse_expression()
+            return PrintStmt(expression)
+        elif tok.type == tokens.TokenType.INPUT:
+            expr = self.algebraic(self.until_to())
+            if self.prev().type == tokens.TokenType.TO:
+                to = self.actual().lexem
+                if not self.peek().type == tokens.TokenType.SEMICOLON:
+                    raise SyntaxError("Expected Semicolon")
+                return InputStmt(expr, to)
+            return InputStmt(expr, None)
         elif tok.type == tokens.TokenType.EOF:
             return None
+    def parse_call(self):
+        if not self.eat(tokens.TokenType.IDENTIFIER):
+            raise SyntaxError("Expected Identifier")
+        idtf = self.parse_identifier()
+        if not self.eat(tokens.TokenType.LPAREN):
+            raise SyntaxError("Expected Paren")
+        args = self.get_args()
+        if self.eat(tokens.TokenType.TO):
+            to = self.actual().lexem
+        else:
+            to = None
+        if not self.eat(tokens.TokenType.SEMICOLON):
+            raise SyntaxError("Expected Semicolon")
+        return CallFunc(idtf, args, to)
+    def until_to(self):
+        until = []
+        while not self.is_at_end():
+            if self.eat_more(tokens.TokenType.TO, tokens.TokenType.SEMICOLON):
+                break
+            if self.eat(tokens.TokenType.EOF):
+                raise SyntaxError("Unexpected EOF")
+            until.append(self.actual())
+            self.advance()
+        return until
     def parse_expression(self):
         expr = []
         while not self.is_at_end():
@@ -214,10 +252,71 @@ class ZynkLParser:
         subparse = ZynkLParser(block, self.debug)
         return subparse.parse()
     def parse_if(self):
-        pass
+        if not self.eat(tokens.TokenType.LPAREN):
+            raise SyntaxError("Expected Paren after if")
+        condition = self.parsinp()
+        if not self.eat(tokens.TokenType.LBRACE):
+            raise SyntaxError("Expected Brace after condition")
+        then = self.parse_block()
+        if self.eat(tokens.TokenType.ELSE):
+            if not self.eat(tokens.TokenType.LBRACE):
+                raise SyntaxError("Expected Brace after else")
+            else_branch = self.parse_block()
+        else:
+            else_branch = None
+        return zexpr.IfExpr(condition, then, else_branch)
     def parse_while(self):
-        pass
+        if not self.eat(tokens.TokenType.LPAREN):
+            raise SyntaxError("Expected Paren after while")
+        condition = self.parsinp()
+        if not self.eat(tokens.TokenType.LBRACE):
+            raise SyntaxError("Expected Brace after condition")
+        body = self.parse_block()
+        return zexpr.WhileExpr(condition, body)
     def parse_for(self):
-        pass
+        if not self.eat(tokens.TokenType.LPAREN):
+            raise SyntaxError("Expected Paren after for")
+        args = self.get_args()
+        name = args[0][0].lexem
+        if args[0][1].lexem != "=":
+            raise SyntaxError("Expected Equal")
+        args[0] = zexpr.VarDef(name, self.algebraic(args[0][2:]))
+        args[1] = self.algebraic(args[1])
+        args[2] = zexpr.VarAssign(name, self.algebraic(args[2]))
+        if not self.eat(tokens.TokenType.LBRACE):
+            raise SyntaxError("Expected Brace after condition")
+        body = self.parse_block()
+        return zexpr.ForExpr(args[0], args[2], args[1], body)
     def parse_func(self):
-        pass
+        funcname = self.actual().lexem
+        if not self.eat(tokens.TokenType.LPAREN):
+            raise SyntaxError("Expected Paren after Function Name")
+        args = self.get_args()
+        if not self.eat(tokens.TokenType.LBRACE):
+            raise SyntaxError("Expected Brace after Params")
+        body = self.parse_block()
+        return FuncDef(funcname, args, body)
+    def parsinp(self):
+        expr = []
+        while not self.is_at_end():
+            if self.eat(tokens.TokenType.RPAREN):
+                break
+            elif self.eat(tokens.TokenType.EOF):
+                raise SyntaxError("Unexpected EOF")
+            else:
+                expr.append(self.actual())
+                self.advance()
+        return self.algebraic(expr)
+    def get_args(self):
+        args = []
+        arg = []
+        while not self.is_at_end():
+            if self.eat(tokens.TokenType.RPAREN):
+                args.append(arg)
+                break
+            elif self.eat(tokens.TokenType.COMMA):
+                args.append(arg)
+                arg = []
+            arg.append(self.actual())
+            self.advance()
+        return args

@@ -72,8 +72,9 @@ class PrintStmt(Expr):
         return f"[ Print : {self.expression} ]"
     
 class InputStmt(Expr):
-    def __init__(self, expression):
+    def __init__(self, expression, to):
         self.expression = expression
+        self.to = to
     def accept(self, visitor):
         return visitor.visit_input(self)
     def __str__(self):
@@ -102,11 +103,10 @@ class Identifier(Expr): # lo usare para cargar cosas en memeoria bajo un nombre
         return f"[ Identifier : {self.name} ]"
     
 class FuncDef(Expr):
-    def __init__(self, name, params, body, ret):
+    def __init__(self, name, params, body):
         self.name = name
         self.params = params
         self.body = body
-        self.ret = ret
     def accept(self, visitor):
         return visitor.visit_func_definition(self)
     def __str__(self):
@@ -114,7 +114,7 @@ class FuncDef(Expr):
     
 class CallFunc(Expr):
     def __init__(self, name, args, to=None):
-        self.name = name
+        self.name = name # donde demonios se guarda
         self.args = args
         self.to = to
     def accept(self, visitor):
@@ -122,7 +122,7 @@ class CallFunc(Expr):
     def __str__(self):
         return f"[ Call : {self.name} : {self.args} : {self.to} ]"
     
-class IfExpr:
+class IfExpr(Expr):
     def __init__(self, condition, then, else_branch=None):
         self.condition = condition
         self.then = then
@@ -180,19 +180,22 @@ class ZynkFunc:
             env.define(self.declaration.params[i], args[i])
         interpreter.switch(env)
         interpreter.eval(self.declaration.body)
-        result = interpreter.eval(self.declaration.ret)
+        result = interpreter.ret
+        interpreter.ret = None
         interpreter.undo()
         return result
+
 class Module:
     def __init__(self, name, env):
         self.name = name
         self.env = env
+
 class MIdentifier(Identifier):
     def __init__(self, module, name):
         self.module = module
         super().__init__(name)
     def accept(self, visitor):
-        visitor.switch(visitor.env.get(self.name).env)
+        visitor.switch(visitor.env.get(self.module).env)
         try:
             return super().accept(visitor)
         finally:
@@ -200,7 +203,13 @@ class MIdentifier(Identifier):
     def __str__(self):
         return f"[ Module : {self.module} : [ {self.name} ] ]"
 
-
+class ReturnExpr(Expr):
+    def __init__(self, expression):
+        self.expression = expression
+    def accept(self, visitor):
+        return visitor.visit_return(self)
+    def __str__(self):
+        return f"[ Return : {self.expression} ]"
 
 
 # FUTURO ¿?

@@ -18,6 +18,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
     def __init__(self, standard_lib_path=None, enclosing=None, debug=False, extension=".zl"):
         self.extension = extension
         self.debug = debug
+        self.ret = None
         self.env = zenv.Enviroment(enclosing)
         if standard_lib_path is None:
             project_root = Path(__file__).resolve().parent.parent
@@ -89,13 +90,19 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         self.env.define(expr.name, function)
         return None
     def visit_call_function(self, expr):
-        function = self.env.get(expr.name)
+        fname = expr.name.name
+        if isinstance(expr.name, zexpr.MIdentifier):
+            self.switch(expr.name.module)
+        function = self.env.get(fname)
         if not hasattr(function, "call"):
-            raise RuntimeError(f"Error : '{expr.name} is not a function!")
+            raise RuntimeError(f"Error : '{fname} is not a function!")
         args = []
         for arg in expr.args:
             args.append(self.eval(arg))
-        self.env.define(expr.to, function.call(args))
+        ret = function.call(args)
+        if isinstance(expr.name, zexpr.MIdentifier):
+            self.undo()
+        self.env.assign(expr.to, ret)
         return None
     def visit_block(self, expr):
         self.new_subenv()
@@ -123,8 +130,10 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
     def visit_input(self, expr):
         prompt = ""
         if expr.expression is not None:
-            promp = str(self.eval(expr.expression))
-        return input(prompt)
+            prompt = str(self.eval(expr.expression))
+        t = input(prompt)
+        self.env.assign(expr.to, t)
+        return t
     def visit_import(self, expr): # esto a sido una tortura
         cwdir = os.getcwd()
         filename = self.eval(expr.name) + self.extension
@@ -171,6 +180,8 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
     def visit_var_assign(self, expr):
         self.env.assign(expr.name, self.eval(expr.expression))
         return None
+    def visit_return(self, expr):
+        self.ret = self.eval(expr.expression)
         
     # wow, añadi muchos metodos, me falta algo para arrays, aunque eso tambien en el lexer y expresiones deberia montar bucles for pues todavia no existen tambien algo para imports
     # esto es sencillo, creo que más tarde copiare esto pero en vez de interpretar que compile, estaria bien, de paso uso patrones de diseño
