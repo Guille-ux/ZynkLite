@@ -127,14 +127,14 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         return input(prompt)
     def visit_import(self, expr): # esto a sido una tortura
         cwdir = os.getcwd()
-        filename = expr.name + self.extension
+        filename = self.eval(expr.name) + self.extension
         if self.debug:
-            print(f"[+] Trying to Load {expr.name} from current work dir [+]")
+            print(f"[+] Trying to Load {self.eval(expr.name)} from current work dir [+]")
         if filename in os.listdir():
             filepath = os.path.join(cwdir, filename)
             if os.path.isfile(filepath):
                 if self.debug:
-                    print(f"[+] Loading module {expr.name} from {filepath} [+]")
+                    print(f"[+] Loading module {self.eval(expr.name)} from {filepath} [+]")
             else:
                 raise RuntimeError(f"Error : {filepath} is not a file")
         else:
@@ -143,7 +143,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             filepath = os.path.join(self.stdlib_path, filename)
         with open(filepath, "r") as f:
             if self.debug:
-                print(f"[+] Loading {expr.name} from {filepath} [+]")
+                print(f"[+] Loading {self.eval(expr.name)} from {filepath} [+]")
             lexer = lexer.ZynkLLexer(f.read(), self.debug)
             tokens = lexer.scan()
             if self.debug:
@@ -156,9 +156,9 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             self.new_subenv()
             for expression in parsed:
                 self.eval(expression)
-            module = zexpr.Module(expr.name, self.env)
+            module = zexpr.Module(self.eval(expr.name), self.env)
             self.undo()
-            self.env.define(expr.name, module)
+            self.env.define(self.eval(expr.alias), module)
             return None
 
     def visit_for(self, expr):
@@ -168,7 +168,9 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             self.eval(expr.body)
             self.eval(expr.increment)
         return None
-
+    def visit_var_assign(self, expr):
+        self.env.assign(expr.name, self.eval(expr.expression))
+        return None
         
     # wow, añadi muchos metodos, me falta algo para arrays, aunque eso tambien en el lexer y expresiones deberia montar bucles for pues todavia no existen tambien algo para imports
     # esto es sencillo, creo que más tarde copiare esto pero en vez de interpretar que compile, estaria bien, de paso uso patrones de diseño

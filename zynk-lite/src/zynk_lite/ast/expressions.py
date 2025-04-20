@@ -79,6 +79,11 @@ class InputStmt(Expr):
     def __str__(self):
         return f"[ Input : {self.expression} ]"
     
+class VarAssign(VarDef):
+    def accept(self, visitor):
+        return visitor.visit_var_assign(self)
+    def __str__(self):
+        return f"[ Var Assign : {self.name} : {self.expression} ]"
 class VarDef(Expr):
     def __init__(self, name, expression):
         self.name = name
@@ -97,10 +102,11 @@ class Identifier(Expr): # lo usare para cargar cosas en memeoria bajo un nombre
         return f"[ Identifier : {self.name} ]"
     
 class FuncDef(Expr):
-    def __init__(self, name, params, body):
+    def __init__(self, name, params, body, ret):
         self.name = name
         self.params = params
         self.body = body
+        self.ret = ret
     def accept(self, visitor):
         return visitor.visit_func_definition(self)
     def __str__(self):
@@ -127,8 +133,9 @@ class IfExpr:
         return f"[ If : {self.condition} : {self.then} : {self.else_branch} ]"
 
 class ImportExpr(Expr):
-    def __init__(self, name):
+    def __init__(self, name, alias):
         self.name = name
+        self.alias = alias
     def accept(self, visitor):
         return visitor.visit_import(self)
     def __str__(self):
@@ -172,7 +179,8 @@ class ZynkFunc:
         for i in range(len(self.declaration.params)):
             env.define(self.declaration.params[i], args[i])
         interpreter.switch(env)
-        result = interpreter.eval(self.declaration.body)
+        interpreter.eval(self.declaration.body)
+        result = interpreter.eval(self.declaration.ret)
         interpreter.undo()
         return result
 class Module:

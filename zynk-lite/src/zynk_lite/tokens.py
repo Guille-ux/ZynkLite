@@ -51,6 +51,7 @@ class TokenType:
     FUNC = 33
     CALL = 34
     TO = 35
+    AS = 45
     RETURN = 36
     ELSE = 37
     IF = 38
