@@ -18,7 +18,7 @@ class AlgebraicParser: # tremend descenso recursivo
     def advance(self):
         if not self.is_at_end():
             self.current += 1
-        return self.tokens[self.current]
+        return self.tokens[self.current-1]
     def peek(self):
         if self.current+1 < len(self.tokens):
             return self.tokens[self.current+1]
@@ -74,7 +74,7 @@ class AlgebraicParser: # tremend descenso recursivo
                 raise SyntaxError("Expected closing parenthesis")
             return expr
         elif self.eat_more(tokens.TokenType.STRING, tokens.TokenType.FLOAT, tokens.TokenType.BOOL, tokens.TokenType.NULL):
-            return zexpr.Literal(self.prev.value)
+            return zexpr.Literal(self.prev().value)
         elif self.eat(tokens.TokenType.IDENTIFIER):
             if self.eat(tokens.TokenType.DOT):
                 if self.eat(tokens.TokenType.IDENTIFIER):
@@ -85,6 +85,8 @@ class AlgebraicParser: # tremend descenso recursivo
         else:
             raise SyntaxError("Unexpected Token")
     def actual(self):
+        if self.is_at_end():
+            return None
         return self.tokens[self.current]
 
 # monte eso a escondidas a 4 am
@@ -101,7 +103,7 @@ class ZynkLParser:
     def advance(self):
         if not self.is_at_end():
             self.current += 1
-        return self.tokens[self.current]
+        return self.tokens[self.current-1]
     def peek(self):
         if self.current+1 <= len(self.tokens):
             return self.tokens[self.current+1]
@@ -119,6 +121,8 @@ class ZynkLParser:
             return True
         return False
     def actual(self):
+        if self.is_at_end():
+            return None
         return self.tokens[self.current]
     def parse_import(self):
         if self.eat_more(tokens.TokenType.IDENTIFIER, tokens.TokenType.STRING):
@@ -154,7 +158,9 @@ class ZynkLParser:
     def parse_stmt(self):
         tok = self.actual()
         self.advance()
-        if tok.type == tokens.TokenType.IMPORT:
+        if tok is None:
+            return None
+        elif tok.type == tokens.TokenType.IMPORT:
             return self.parse_import()
         elif tok.type == tokens.TokenType.IDENTIFIER:
             first = self.parse_identifier()

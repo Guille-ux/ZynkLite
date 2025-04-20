@@ -9,7 +9,7 @@ class Enviroment: # importante, diferente contexto => diferente resultado
     def define(self, name, value):
         self.values[name]=value
     def get(self, name):
-        if if name in self.values:
+        if name in self.values:
             return self.values[name]
         elif self.enclosing is not None:
             return self.enclosing.get(name)

@@ -80,11 +80,7 @@ class InputStmt(Expr):
     def __str__(self):
         return f"[ Input : {self.expression} ]"
     
-class VarAssign(VarDef):
-    def accept(self, visitor):
-        return visitor.visit_var_assign(self)
-    def __str__(self):
-        return f"[ Var Assign : {self.name} : {self.expression} ]"
+
 class VarDef(Expr):
     def __init__(self, name, expression):
         self.name = name
@@ -93,7 +89,12 @@ class VarDef(Expr):
         return visitor.visit_var_definition(self)
     def __str__(self):
         return f"[ Var Definition : {self.name} : {self.expression} ]"
-    
+class VarAssign(VarDef):
+    def accept(self, visitor):
+        return visitor.visit_var_assign(self)
+    def __str__(self):
+        return f"[ Var Assign : {self.name} : {self.expression} ]"
+        
 class Identifier(Expr): # lo usare para cargar cosas en memeoria bajo un nombre
     def __init__(self, name):
         self.name = name

@@ -2,11 +2,11 @@
 #
 # SPDX-License-Identifier: GPLv3
 
-from . import frontend.lexer as lexer
-from . import ast.eval as eval
-from . import ast.parser as parser
+from .frontend import lexer
+from .ast import eval
+from .ast import parser
 
-class Interpreter:
+class ZynkLInterpreter:
     def __init__(self, standard_lib_path=None, enclosing=None, debug=False, extension=".zl"):
         self.evaluator = eval.ZynkLEval(standard_lib_path, enclosing, debug, extension)
         self.debug = debug
@@ -15,8 +15,11 @@ class Interpreter:
         tokens = lex.scan()
         par = parser.ZynkLParser(tokens, self.debug)
         parsed = par.parse()
-        for stmt in parsed():
+        for stmt in parsed:
             self.evaluator.eval(stmt)
+        if self.debug:
+            print(tokens)
+            print(parsed)
     def eval_file(self, filepath):
         with open(filepath, "r") as f:
             code = f.read()
