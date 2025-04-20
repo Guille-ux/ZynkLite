@@ -24,20 +24,22 @@ class AlgebraicParser: # tremend descenso recursivo
             return self.tokens[self.current+1]
         return None
     def eat(self, tipo):
-        if self.actual().type == tipo:
+        if not self.is_at_end() and self.tokens[self.current].type == tipo:
             self.advance()
             return True
         return False
     def prev(self):
         return self.tokens[self.current-1]
     def eat_more(self, *types):
-        if self.actual().type in types:
+        if not self.is_at_end() and self.tokens[self.current].type in types:
             self.advance()
             return True
         return False
     def parse_logic(self):
         fnode = self.parse_comp()
         while self.eat_more(tokens.TokenType.AND, tokens.TokenType.OR, tokens.TokenType.XOR):
+            if self.peek().type==tokens.TokenType.SEMICOLON:
+                return fnode
             op = self.prev().lexem
             snode = self.parse_comp()
             fnode = zexpr.Binary(fnode, op, snode)
@@ -45,6 +47,8 @@ class AlgebraicParser: # tremend descenso recursivo
     def parse_comp(self):
         fnode = self.parse_expr()
         while self.eat_more(tokens.TokenType.EQUAL_EQUAL, tokens.TokenType.BANG_EQUAL, tokens.TokenType.LESS, tokens.TokenType.GREATER, tokens.TokenType.LESS_EQUAL, tokens.TokenType.GREATER_EQUAL):
+            if self.peek().type==tokens.TokenType.SEMICOLON:
+                return fnode
             op = self.prev().lexem
             snode = self.parse_expr()
             fnode = zexpr.Binary(fnode, op, snode)
@@ -52,6 +56,8 @@ class AlgebraicParser: # tremend descenso recursivo
     def parse_expr(self):
         fnode = self.parse_term()
         while self.eat_more(tokens.TokenType.PLUS, tokens.TokenType.MINUS):
+            if self.peek().type==tokens.TokenType.SEMICOLON:
+                return fnode
             op = self.prev().lexem
             snode = self.parse_term()
             fnode = zexpr.Binary(fnode, op, snode)
@@ -59,6 +65,8 @@ class AlgebraicParser: # tremend descenso recursivo
     def parse_term(self):
         fnode = self.parse_factor()
         while self.eat_more(tokens.TokenType.STAR, tokens.TokenType.SLASH):
+            if self.peek().type==tokens.TokenType.SEMICOLON:
+                return fnode
             op=self.prev().lexem
             snode = self.parse_factor()
             fnode = zexpr.Binary(fnode, op, snode)
@@ -84,10 +92,7 @@ class AlgebraicParser: # tremend descenso recursivo
             return zexpr.Identifier(self.prev().lexem)
         else:
             raise SyntaxError("Unexpected Token")
-    def actual(self):
-        if self.is_at_end():
-            return None
-        return self.tokens[self.current]
+
 
 # monte eso a escondidas a 4 am
 # código clandestino
@@ -140,7 +145,7 @@ class ZynkLParser:
         first = self.prev()
         if self.eat(tokens.TokenType.DOT):
             if self.eat(tokens.TokenType.IDENTIFIER):
-                return MIdentifier(first.lexem, self.prev().lexem)
+                return zexpr.MIdentifier(first.lexem, self.prev().lexem)
             else:
                 raise SyntaxError("Expected Identifier After dot")
         else:
@@ -199,15 +204,15 @@ class ZynkLParser:
             return None
         elif tok.type == tokens.TokenType.PRINT:
             expression = self.parse_expression()
-            return PrintStmt(expression)
+            return zexpr.PrintStmt(expression)
         elif tok.type == tokens.TokenType.INPUT:
             expr = self.algebraic(self.until_to())
             if self.prev().type == tokens.TokenType.TO:
                 to = self.actual().lexem
                 if not self.peek().type == tokens.TokenType.SEMICOLON:
                     raise SyntaxError("Expected Semicolon")
-                return InputStmt(expr, to)
-            return InputStmt(expr, None)
+                return zexpr.InputStmt(expr, to)
+            return zexpr.InputStmt(expr, None)
         elif tok.type == tokens.TokenType.EOF:
             return None
     def parse_call(self):
@@ -223,7 +228,7 @@ class ZynkLParser:
             to = None
         if not self.eat(tokens.TokenType.SEMICOLON):
             raise SyntaxError("Expected Semicolon")
-        return CallFunc(idtf, args, to)
+        return zexpr.CallFunc(idtf, args, to)
     def until_to(self):
         until = []
         while not self.is_at_end():
@@ -301,7 +306,7 @@ class ZynkLParser:
         if not self.eat(tokens.TokenType.LBRACE):
             raise SyntaxError("Expected Brace after Params")
         body = self.parse_block()
-        return FuncDef(funcname, args, body)
+        return zexpr.FuncDef(funcname, args, body)
     def parsinp(self):
         expr = []
         while not self.is_at_end():

@@ -124,7 +124,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             self.eval(expr.body)
         return None
     def visit_print(self, expr):
-        value = self.eval(expr.value)
+        value = self.eval(expr.expression)
         print(value)
         return None
     def visit_input(self, expr):
