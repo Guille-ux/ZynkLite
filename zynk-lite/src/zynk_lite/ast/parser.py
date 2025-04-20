@@ -3,13 +3,16 @@
 # SPDX-License-Identifier: GPLv3
 
 from .. import tokens
+from . import expressions as zexpr
 from .. import errors
 
-class AlgebraicParser:
+class AlgebraicParser: # tremend descenso recursivo
     def __init__(self, tokens, debug=False):
         self.tokens = tokens
         self.debug = debug
         self.current = 0
+    def parse(self):
+        return self.parse_logic()
     def is_at_end(self):
         return self.current >= len(tokens)
     def advance(self):
@@ -35,22 +38,52 @@ class AlgebraicParser:
     def parse_logic(self):
         fnode = self.parse_comp()
         while self.eat_more(tokens.TokenType.AND, tokens.TokenType.OR, tokens.TokenType.XOR):
-            pass
+            op = self.prev().lexem
+            snode = self.parse_comp()
+            fnode = zexpr.Binary(fnode, op, snode)
+        return fnode
     def parse_comp(self):
         fnode = self.parse_expr()
         while self.eat_more(tokens.TokenType.EQUAL_EQUAL, tokens.TokenType.BANG_EQUAL, tokens.TokenType.LESS, tokens.TokenType.GREATER, tokens.TokenType.LESS_EQUAL, tokens.TokenType.GREATER_EQUAL):
-            pass
+            op = self.prev().lexem
+            snode = self.parse_expr()
+            fnode = zexpr.Binary(fnode, op, snode)
+        return fnode
     def parse_expr(self):
         fnode = self.parse_term()
         while self.eat_more(tokens.TokenType.PLUS, tokens.TokenType.MINUS):
-            pass
+            op = self.prev().lexem
+            snode = self.parse_term()
+            fnode = zexpr.Binary(fnode, op, snode)
+        return fnode
     def parse_term(self):
         fnode = self.parse_factor()
         while self.eat_more(tokens.TokenType.STAR, tokens.TokenType.SLASH):
-            pass
+            op=self.prev().lexem
+            snode = self.parse_factor()
+            fnode = zexpr.Binary(fnode, op, snode)
+        return fnode
 
     def parse_factor(self):
-        pass
+        if self.eat_more(tokens.TokenType.MINUS, tokens.TokenType.BANG):
+            op = self.prev().lexem
+            return zexpr.Unary(op, self.parse_factor(self.actual()))
+        elif self.eat_more(tokens.TokenType.STRING, tokens.TokenType.FLOAT, tokens.TokenType.BOOL, tokens.TokenType.NULL):
+            return zexpr.Literal(self.prev.value)
+        elif self.eat(tokens.TokenType.IDENTIFIER):
+            if self.eat(tokens.TokenType.DOT):
+                if self.eat(tokens.TokenType.IDENTIFIER):
+                    return zexpr.MIdentifier(self.tokens[self.current-3].lexem, self.prev().lexem)
+                else:
+                    raise SyntaxError("Expected identifier after a dot")
+            return zexpr.Identifier(self.prev().lexem)
+        else:
+            raise SyntaxError("Unexpected Token")
+    def actual(self):
+        return self.tokens[self.current]
+
+# monte eso a escondidas a 4 am
+# código clandestino
 
 
 class ZynkLParser:
@@ -84,3 +117,5 @@ class ZynkLParser:
             self.advance()
             return True
         return False
+    def actual(self):
+        return self.tokens[self.current]
