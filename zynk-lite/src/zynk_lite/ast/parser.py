@@ -74,7 +74,6 @@ class AlgebraicParser: # tremend descenso recursivo
         return fnode
 
     def parse_factor(self):
-        print(self.tokens[self.current])
         if self.eat_more(tokens.TokenType.MINUS, tokens.TokenType.BANG):
             op = self.prev().lexem
             return zexpr.Unary(op, self.parse_factor())
