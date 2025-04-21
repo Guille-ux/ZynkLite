@@ -155,12 +155,12 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         with open(filepath, "r") as f:
             if self.debug:
                 print(f"[+] Loading {self.eval(expr.name)} from {filepath} [+]")
-            lexer = lexer.ZynkLLexer(f.read(), self.debug)
-            tokens = lexer.scan()
+            lex = lexer.ZynkLLexer(f.read(), self.debug)
+            tokens = lex.scan()
             if self.debug:
                 print(f"[+] Analysis of {expr.name} module completed [+]")
-            parser = parser.ZynkLParser(tokens, self.debug)
-            parsed = parser.parse()
+            pars = parser.ZynkLParser(tokens, self.debug)
+            parsed = pars.parse()
             if self.debug:
                 print(f"[+] Module Parsed [+]")
                 print(f"[+] Evaluating [+]")
