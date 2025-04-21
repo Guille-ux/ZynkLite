@@ -94,7 +94,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
     def visit_call_function(self, expr):
         fname = expr.name.name
         if isinstance(expr.name, zexpr.MIdentifier):
-            self.switch(expr.name.module.env)
+            self.switch(self.env.get(expr.name.module).env)
         function = self.env.get(fname)
         if not hasattr(function, "call"):
             raise RuntimeError(f"Error : '{fname} is not a function!")
