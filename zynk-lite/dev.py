@@ -5,21 +5,17 @@
 from src.zynk_lite import interpreter as intp
 interpreter = intp.ZynkLInterpreter(debug=True)
 case = """
-var i;
-var ini;
-var end;
-
-call clock() to ini;
-
-var count=0;
-while (count < 100000) {
-  count = count + 1;
+func isAdult(age) {
+	if (age >= 18) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
-call clock() to end;
-
-print "Tiempo de ejecución:";
-print end - ini;
+var r;
+call isAdult(16) to r;
+print r;
 
 """
 interpreter.eval(case)

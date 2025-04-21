@@ -184,6 +184,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         return None
     def visit_return(self, expr):
         self.ret = self.eval(expr.expression)
+        return self.ret
     def visit_array_expr(self, expr):
         pass # tengo que implementarlo
     def visit_index_expr(self, expr):

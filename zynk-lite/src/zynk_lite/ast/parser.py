@@ -115,21 +115,21 @@ class ZynkLParser:
             return self.tokens[self.current+1]
         return None
     def eat(self, tipe):
-        if self.actual().type == tipe:
+        if not self.is_at_end() and self.actual().type == tipe:
             self.advance()
             return True
         return False
     def prev(self):
         return self.tokens[self.current-1]
     def eat_more(self, *types):
-        if self.actual().type in types:
+        if not self.is_at_end() and self.actual().type in types:
             self.advance()
             return True
         return False
     def actual(self):
-        if self.is_at_end():
-            return None
-        return self.tokens[self.current]
+        if not self.is_at_end():
+            return self.tokens[self.current]
+        return None
     def parse_import(self):
         if self.eat_more(tokens.TokenType.IDENTIFIER, tokens.TokenType.STRING):
             first = self.algebraic([self.prev()])
@@ -166,6 +166,9 @@ class ZynkLParser:
         self.advance()
         if tok is None:
             return None
+        elif tok.type==tokens.TokenType.RETURN:
+            expre = self.parse_expression()
+            return zexpr.ReturnExpr(expre)
         elif tok.type == tokens.TokenType.IMPORT:
             return self.parse_import()
         elif tok.type == tokens.TokenType.IDENTIFIER:
@@ -255,14 +258,21 @@ class ZynkLParser:
         return self.algebraic(expr)
     def parse_block(self):
         block = []
+        braces = 1
         while not self.is_at_end():
             if self.eat(tokens.TokenType.RBRACE):
-                break
+                braces -= 1
+                if braces == 0:
+                    break
+                else:
+                    block.append(self.prev())
+            elif self.eat(tokens.TokenType.LBRACE):
+                braces += 1
+                block.append(self.prev())
             elif self.eat(tokens.TokenType.EOF):
                 raise SyntaxError("Unexpected EOF")
             else:
-                block.append(self.actual())
-                self.advance()
+                block.append(self.advance())
         subparse = ZynkLParser(block, self.debug)
         return zexpr.BlockExpr(subparse.parse())
     def parse_if(self):
@@ -271,14 +281,19 @@ class ZynkLParser:
         condition = self.parsinp()
         if not self.eat(tokens.TokenType.LBRACE):
             raise SyntaxError("Expected Brace after condition")
-        then = self.parse_block()
+        then_branch = self.parse_block()
+        else_branch = None
+
         if self.eat(tokens.TokenType.ELSE):
-            if not self.eat(tokens.TokenType.LBRACE):
-                raise SyntaxError("Expected Brace after else")
-            else_branch = self.parse_block()
-        else:
-            else_branch = None
-        return zexpr.IfExpr(condition, then, else_branch)
+            if self.eat(tokens.TokenType.LBRACE):
+                else_branch = self.parse_block()
+            elif self.eat(tokens.TokenType.IF):
+                # Manejar else if
+                else_branch = self.parse_if()
+            else:
+                raise SyntaxError("Expected '{' or 'if' after 'else'")
+    
+        return zexpr.IfExpr(condition, then_branch, else_branch)
     def parse_while(self):
         if not self.eat(tokens.TokenType.LPAREN):
             raise SyntaxError("Expected Paren after while")
@@ -320,8 +335,7 @@ class ZynkLParser:
             elif self.eat(tokens.TokenType.EOF):
                 raise SyntaxError("Unexpected EOF")
             else:
-                expr.append(self.actual())
-                self.advance()
+                expr.append(self.advance())
         return self.algebraic(expr)
     def get_args(self):
         args = []

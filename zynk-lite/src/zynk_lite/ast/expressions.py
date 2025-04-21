@@ -126,7 +126,7 @@ class CallFunc(Expr):
         return f"[ Call : {self.name} : {self.args} : {self.to} ]"
     
 class IfExpr(Expr):
-    def __init__(self, condition, then, else_branch=None):
+    def __init__(self, condition, then, else_branch):
         self.condition = condition
         self.then = then
         self.else_branch = else_branch
@@ -183,10 +183,11 @@ class ZynkFunc:
             env.define(self.declaration.params[i], args[i])
         interpreter.switch(env)
         interpreter.eval(self.declaration.body)
-        result = interpreter.ret
-        interpreter.ret = None
-        interpreter.undo()
-        return result
+        try:
+            return interpreter.ret
+        finally:
+            interpreter.ret = None
+            interpreter.undo()
 
 class Module:
     def __init__(self, name, env):
