@@ -2,7 +2,7 @@
 
 echo "Adding Zynk Lite MIME..."
 
-xdg-mime install --mode user packages/application-x-zynk.xml
+xdg-mime install --mode user package/application-x-zynk.xml
 
 xdg-icon-resource install --context mimetypes --size 512 icons/hicolor/512x512/mimetypes/application-x-zynk.png application-x-zynk
 
