@@ -69,7 +69,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             error.print_error()
     def visit_unary(self, expr):
         operand = expr.operand
-        right = expr.right
+        right = self.eval(expr.right)
 
         if operand == "!":
             return not right
@@ -81,7 +81,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
                 raise error
             error.print_error()
     def visit_grouping(self, expr):
-        return expr.expression.accept()
+        return expr.expression.accept(self)
     def visit_var_definition(self, expr):
         self.env.define(expr.name, self.eval(expr.expression))
         return None
@@ -184,6 +184,12 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         return None
     def visit_return(self, expr):
         self.ret = self.eval(expr.expression)
+    def visit_array_expr(self, expr):
+        pass # tengo que implementarlo
+    def visit_index_expr(self, expr):
+        pass # tengo que implementarlo
+    def visit_index_assign_expr(self, expr):
+        pass # tengo que implementarlo
         
     # wow, añadi muchos metodos, me falta algo para arrays, aunque eso tambien en el lexer y expresiones deberia montar bucles for pues todavia no existen tambien algo para imports
     # esto es sencillo, creo que más tarde copiare esto pero en vez de interpretar que compile, estaria bien, de paso uso patrones de diseño

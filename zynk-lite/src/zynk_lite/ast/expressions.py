@@ -14,6 +14,8 @@ class Expr:
         raise NotImplementedError()
     def __str__(self):
         raise NotImplementedError()
+    def __repr__(self):
+        return self.__str__()
     
 # Literal con patron del visitante, WoW
 
@@ -211,6 +213,33 @@ class ReturnExpr(Expr):
         return visitor.visit_return(self)
     def __str__(self):
         return f"[ Return : {self.expression} ]"
+
+class ArrayExpr(Expr): # Ho Ho, ya llegan
+    def __init__(self, elements):
+        self.items = elements
+    def accept(self, visitor):
+        return visitor.visit_array_expr(self)
+    def __str__(self):
+        return f"[ Array : {self.items} ]"
+    
+class IndexExpr(Expr):
+    def __init__(self, array, index):
+        self.array = array # un array xD
+        self.index = index # posición, espera, porque lo digo. acaso no sabes ingés?
+    def accept(self, visitor):
+        return visitor.visit_index_expr(self)
+    def __str__(self):
+        return f"[ Index : {self.index} : {self.array} ]"
+
+class IndexAssignExpr(Expr):
+    def __init__(self, array, index, value):
+        self.array = array
+        self.index = index
+        self.value = value
+    def accept(self, visitor):
+        return visitor.visit_index_assign_expr(self)
+    def __str__(self):
+        return f"[ Assign Index : {self.value} : {self.index} : {self.array} ]"
 
 
 # FUTURO ¿?
