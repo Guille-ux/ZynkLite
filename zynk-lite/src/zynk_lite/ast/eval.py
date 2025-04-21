@@ -9,6 +9,7 @@ from ..frontend import lexer
 from . import parser
 import os
 from pathlib import Path
+from ..native_funcs import core
 
 class Visitor:
     def __init__(self):
@@ -25,6 +26,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             self.stdlib_path = project_root / "lib"
         else:
             self.stdlib_path = standard_lib_path
+        core.add_natives(self, core.core_funcs)
     def subenv(self):
         new = zenv.Enviroment(self.env)
         return new

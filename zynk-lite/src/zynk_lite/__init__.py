@@ -9,3 +9,4 @@ from . import tokens
 from . import ast
 from . import bytecode
 from . import frontend
+from . import native_funcs

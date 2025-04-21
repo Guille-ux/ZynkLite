@@ -4,7 +4,7 @@
 
 from . import interpreter as intp
 from . import compiler
-from . import __about__.__version__ as version
+from . __about__ import __version__ as version
 import sys
 
 

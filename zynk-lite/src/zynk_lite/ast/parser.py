@@ -39,7 +39,7 @@ class AlgebraicParser: # tremend descenso recursivo
     def parse_logic(self):
         fnode = self.parse_comp()
         while self.eat_more(tokens.TokenType.AND, tokens.TokenType.OR, tokens.TokenType.XOR):
-            if self.peek().type==tokens.TokenType.SEMICOLON:
+            if self.current+1 < len(self.tokens) and self.peek().type==tokens.TokenType.SEMICOLON:
                 break
             op = self.prev().lexem
             snode = self.parse_comp()
@@ -48,7 +48,7 @@ class AlgebraicParser: # tremend descenso recursivo
     def parse_comp(self):
         fnode = self.parse_expr()
         while self.eat_more(tokens.TokenType.EQUAL_EQUAL, tokens.TokenType.BANG_EQUAL, tokens.TokenType.LESS, tokens.TokenType.GREATER, tokens.TokenType.LESS_EQUAL, tokens.TokenType.GREATER_EQUAL):
-            if self.peek().type==tokens.TokenType.SEMICOLON:
+            if self.current+1 < len(self.tokens) and self.peek().type==tokens.TokenType.SEMICOLON:
                 break
             op = self.prev().lexem
             snode = self.parse_expr()
@@ -57,7 +57,7 @@ class AlgebraicParser: # tremend descenso recursivo
     def parse_expr(self):
         fnode = self.parse_term()
         while self.eat_more(tokens.TokenType.PLUS, tokens.TokenType.MINUS):
-            if self.peek().type==tokens.TokenType.SEMICOLON:
+            if self.current+1 < len(self.tokens) and self.peek().type==tokens.TokenType.SEMICOLON:
                 break
             op = self.prev().lexem
             snode = self.parse_term()
@@ -66,7 +66,7 @@ class AlgebraicParser: # tremend descenso recursivo
     def parse_term(self):
         fnode = self.parse_factor()
         while self.eat_more(tokens.TokenType.STAR, tokens.TokenType.SLASH):
-            if self.peek().type==tokens.TokenType.SEMICOLON:
+            if self.current+1 < len(self.tokens) and self.peek().type==tokens.TokenType.SEMICOLON:
                 break
             op=self.prev().lexem
             snode = self.parse_factor()
@@ -74,6 +74,7 @@ class AlgebraicParser: # tremend descenso recursivo
         return fnode
 
     def parse_factor(self):
+        print(self.tokens[self.current])
         if self.eat_more(tokens.TokenType.MINUS, tokens.TokenType.BANG):
             op = self.prev().lexem
             return zexpr.Unary(op, self.parse_factor())
@@ -213,7 +214,6 @@ class ZynkLParser:
             expr = self.algebraic(self.until_to())
             if self.prev().type == tokens.TokenType.TO:
                 to = self.advance().lexem
-                print(to)
                 if not self.advance().type == tokens.TokenType.SEMICOLON:
                     raise SyntaxError("Expected Semicolon")
                 return zexpr.InputStmt(expr, to)
@@ -229,7 +229,7 @@ class ZynkLParser:
         args = self.get_args()
         args = [self.algebraic(arg) for arg in args if arg]
         if self.eat(tokens.TokenType.TO):
-            to = self.actual().lexem
+            to = self.advance().lexem
         else:
             to = None
         if not self.eat(tokens.TokenType.SEMICOLON):
