@@ -176,6 +176,8 @@ class ZynkLParser:
                 raise SyntaxError("Unexpected Token after Identifier")
         elif tok.type == tokens.TokenType.IF:
            return self.parse_if()
+        elif tok.type == tokens.TokenType.CALL:
+            return self.parse_call()
 
         elif tok.type == tokens.TokenType.WHILE:
             return self.parse_while()
@@ -186,14 +188,13 @@ class ZynkLParser:
         elif tok.type == tokens.TokenType.FUNC:
             return self.parse_func()
         elif tok.type == tokens.TokenType.VAR:
-            self.advance()
             if self.eat(tokens.TokenType.IDENTIFIER):
                 name = self.prev().lexem
                 if self.eat(tokens.TokenType.EQUAL):
                     value = self.parse_expression()
-                    return zexpr.VarAssign(name, value)
+                    return zexpr.VarDef(name, value)
                 else:
-                    return zexpr.VarAssign(name, zexpr.Literal(None))
+                    return zexpr.VarDef(name, zexpr.Literal(None))
             else:
                 raise SyntaxError("Expected identifier after 'var'")
         elif tok.type == tokens.TokenType.LBRACE:
@@ -222,6 +223,7 @@ class ZynkLParser:
         if not self.eat(tokens.TokenType.LPAREN):
             raise SyntaxError("Expected Paren")
         args = self.get_args()
+        args = [self.algebraic(arg) for arg in args]
         if self.eat(tokens.TokenType.TO):
             to = self.actual().lexem
         else:
@@ -300,6 +302,7 @@ class ZynkLParser:
         return zexpr.ForExpr(args[0], args[2], args[1], body)
     def parse_func(self):
         funcname = self.actual().lexem
+        self.advance()
         if not self.eat(tokens.TokenType.LPAREN):
             raise SyntaxError("Expected Paren after Function Name")
         args = self.get_args()

@@ -226,6 +226,8 @@ class ZynkLLexer:
             self.add_token(tokens.TokenType.ELSE, "else")
         elif self.match_sequence("as"):
             self.add_token(tokens.TokenType.AS)
+        elif char in self.var_set:
+            self.add_token(tokens.TokenType.IDENTIFIER, self.identifier_lex())
         else:
             self.error = True
             lerror = self.throw("Unexpected Token")

@@ -12,9 +12,12 @@
 
 ## Installation
 
-```console
+```bash
 pip install zynk-lite
 ```
+
+## Documentation
+[Documentation](https://github.com/Guille-ux/ZynkLite)
 
 ## License
 

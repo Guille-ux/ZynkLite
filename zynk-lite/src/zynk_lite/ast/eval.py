@@ -80,7 +80,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             error.print_error()
     def visit_grouping(self, expr):
         return expr.expression.accept()
-    def visit_var_definitions(self, expr):
+    def visit_var_definition(self, expr):
         self.env.define(expr.name, self.eval(expr.expression))
         return None
     def visit_identifier(self, expr):
