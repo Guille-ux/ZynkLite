@@ -11,6 +11,7 @@ class AlgebraicParser: # tremend descenso recursivo
         self.tokens = tokens
         self.debug = debug
         self.current = 0
+        self.stop = False
     def parse(self):
         return self.parse_logic()
     def is_at_end(self):
@@ -39,7 +40,7 @@ class AlgebraicParser: # tremend descenso recursivo
         fnode = self.parse_comp()
         while self.eat_more(tokens.TokenType.AND, tokens.TokenType.OR, tokens.TokenType.XOR):
             if self.peek().type==tokens.TokenType.SEMICOLON:
-                return fnode
+                break
             op = self.prev().lexem
             snode = self.parse_comp()
             fnode = zexpr.Binary(fnode, op, snode)
@@ -48,7 +49,7 @@ class AlgebraicParser: # tremend descenso recursivo
         fnode = self.parse_expr()
         while self.eat_more(tokens.TokenType.EQUAL_EQUAL, tokens.TokenType.BANG_EQUAL, tokens.TokenType.LESS, tokens.TokenType.GREATER, tokens.TokenType.LESS_EQUAL, tokens.TokenType.GREATER_EQUAL):
             if self.peek().type==tokens.TokenType.SEMICOLON:
-                return fnode
+                break
             op = self.prev().lexem
             snode = self.parse_expr()
             fnode = zexpr.Binary(fnode, op, snode)
@@ -57,7 +58,7 @@ class AlgebraicParser: # tremend descenso recursivo
         fnode = self.parse_term()
         while self.eat_more(tokens.TokenType.PLUS, tokens.TokenType.MINUS):
             if self.peek().type==tokens.TokenType.SEMICOLON:
-                return fnode
+                break
             op = self.prev().lexem
             snode = self.parse_term()
             fnode = zexpr.Binary(fnode, op, snode)
@@ -66,7 +67,7 @@ class AlgebraicParser: # tremend descenso recursivo
         fnode = self.parse_factor()
         while self.eat_more(tokens.TokenType.STAR, tokens.TokenType.SLASH):
             if self.peek().type==tokens.TokenType.SEMICOLON:
-                return fnode
+                break
             op=self.prev().lexem
             snode = self.parse_factor()
             fnode = zexpr.Binary(fnode, op, snode)
@@ -91,7 +92,7 @@ class AlgebraicParser: # tremend descenso recursivo
                     raise SyntaxError("Expected identifier after a dot")
             return zexpr.Identifier(self.prev().lexem)
         else:
-            raise SyntaxError("Unexpected Token")
+            raise SyntaxError(f"Unexpected Token {self.tokens[self.current]}")
 
 
 # monte eso a escondidas a 4 am
@@ -193,8 +194,10 @@ class ZynkLParser:
                 if self.eat(tokens.TokenType.EQUAL):
                     value = self.parse_expression()
                     return zexpr.VarDef(name, value)
-                else:
+                elif self.eat(tokens.TokenType.SEMICOLON):
                     return zexpr.VarDef(name, zexpr.Literal(None))
+                else:
+                    raise SyntaxError(f"Unexpected token {self.actual()}")
             else:
                 raise SyntaxError("Expected identifier after 'var'")
         elif tok.type == tokens.TokenType.LBRACE:
@@ -209,8 +212,9 @@ class ZynkLParser:
         elif tok.type == tokens.TokenType.INPUT:
             expr = self.algebraic(self.until_to())
             if self.prev().type == tokens.TokenType.TO:
-                to = self.actual().lexem
-                if not self.peek().type == tokens.TokenType.SEMICOLON:
+                to = self.advance().lexem
+                print(to)
+                if not self.advance().type == tokens.TokenType.SEMICOLON:
                     raise SyntaxError("Expected Semicolon")
                 return zexpr.InputStmt(expr, to)
             return zexpr.InputStmt(expr, None)
@@ -223,7 +227,7 @@ class ZynkLParser:
         if not self.eat(tokens.TokenType.LPAREN):
             raise SyntaxError("Expected Paren")
         args = self.get_args()
-        args = [self.algebraic(arg) for arg in args]
+        args = [self.algebraic(arg) for arg in args if arg]
         if self.eat(tokens.TokenType.TO):
             to = self.actual().lexem
         else:
@@ -238,8 +242,7 @@ class ZynkLParser:
                 break
             if self.eat(tokens.TokenType.EOF):
                 raise SyntaxError("Unexpected EOF")
-            until.append(self.actual())
-            self.advance()
+            until.append(self.advance())
         return until
     def parse_expression(self):
         expr = []
@@ -249,8 +252,7 @@ class ZynkLParser:
             elif self.eat(tokens.TokenType.EOF):
                 raise SyntaxError("Unexpected EOF")
             else:
-                expr.append(self.actual())
-                self.advance()
+                expr.append(self.advance())
         return self.algebraic(expr)
     def parse_block(self):
         block = []
@@ -263,7 +265,7 @@ class ZynkLParser:
                 block.append(self.actual())
                 self.advance()
         subparse = ZynkLParser(block, self.debug)
-        return subparse.parse()
+        return zexpr.BlockExpr(subparse.parse())
     def parse_if(self):
         if not self.eat(tokens.TokenType.LPAREN):
             raise SyntaxError("Expected Paren after if")
@@ -306,6 +308,7 @@ class ZynkLParser:
         if not self.eat(tokens.TokenType.LPAREN):
             raise SyntaxError("Expected Paren after Function Name")
         args = self.get_args()
+        args = [arg[0].lexem for arg in args if len(arg) > 0]
         if not self.eat(tokens.TokenType.LBRACE):
             raise SyntaxError("Expected Brace after Params")
         body = self.parse_block()
@@ -331,6 +334,5 @@ class ZynkLParser:
             elif self.eat(tokens.TokenType.COMMA):
                 args.append(arg)
                 arg = []
-            arg.append(self.actual())
-            self.advance()
+            arg.append(self.advance())
         return args

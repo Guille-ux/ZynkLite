@@ -3,7 +3,7 @@
  <img width=200px height=200px src="mimes/zl-mime.png" alt="ZynkMime"></a>
 </p>
 
-<h3 align="center">Project Title</h3>
+<h3 align="center">Zynk Lite</h3>
 
 <div align="center">
 

@@ -99,7 +99,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         args = []
         for arg in expr.args:
             args.append(self.eval(arg))
-        ret = function.call(args)
+        ret = function.call(self, args)
         if isinstance(expr.name, zexpr.MIdentifier):
             self.undo()
         self.env.assign(expr.to, ret)
