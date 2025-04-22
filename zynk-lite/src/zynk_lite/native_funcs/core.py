@@ -22,9 +22,9 @@ def clock(args):
 def lenght(args):
     return len(args[0])
 def get_index(args):
-    return args[0][args[1]]
+    return args[0][int(args[1])]
 def set_index(args):
-    args[0][args[1]]=args[2]
+    args[0][int(args[1])]=args[2]
     return None
 def push(args):
     args[0].append(args[1])
@@ -65,6 +65,8 @@ def tfloat(args):
     return float(args[0])
 def tstr(args):
     return str(args[0])
+def tint(args):
+    return int(args[0])
 
 # time
 nclock = ZynkNativeFunc(clock)
@@ -85,6 +87,7 @@ nrb = ZynkNativeFunc(read_bytes)
 
 ntf = ZynkNativeFunc(tfloat)
 nts = ZynkNativeFunc(tstr)
+nti = ZynkNativeFunc(tint)
 
 def add_natives(eval, funcs):
     for k, v in funcs.items():
@@ -92,4 +95,5 @@ def add_natives(eval, funcs):
 
 
 # CORE FUNCS
-core_funcs = {"clock":nclock, "len":nlenght, "get_index":nget_index, "set_index":nset_index, "push":npush, "write":nwf, "read":nrf, "write_bytes":nwb, "read_bytes":nrb, "str":nts, "float":ntf}
+core_funcs = {"clock":nclock, "len":nlenght, "get_index":nget_index, "set_index":nset_index, "push":npush, "write":nwf, "read":nrf, "write_bytes":nwb, "read_bytes":nrb, "str":nts, "float":ntf,
+"int":nti}
