@@ -26,23 +26,23 @@
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
-## 🚀 About ZynkLite
+## 🚀 About ZynkLite <a name = "about"></a>
 
 ZynkLite is a lightweight, embeddable scripting language developed in Python with plans for a high-performance C implementation. Designed for simplicity and extensibility, it features:
 
-✔️ Native file I/O operations  
-✔️ Array manipulation functions
-✔️ Sleep function
-✔️ Modular import system  
-✔️ Clean, minimal syntax  
-✔️ String & Float conversion methods
+- ✔️ Native file I/O operations  
+- ✔️ Array manipulation functions
+- ✔️ Sleep function
+- ✔️ Modular import system  
+- ✔️ Clean, minimal syntax  
+- ✔️ String & Float conversion methods
 
-**Current Focus**:  
+**Current Focus** <a name = "current"></a>: 
 - Bytecode compiler development  
 - Performance optimizations  
 - Enhanced module system  
 
-## 📦 Installation
+## 📦 Installation <a name = "getting_started"></a>
 
 ### Prerequisites
 - Python 3.6+
