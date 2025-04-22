@@ -14,7 +14,7 @@
 ## Features
 
 - Lightweight interpreter (<500KB)
-- Python/C interoperable
+- Python/C interoperable (Future)
 - Native file I/O and array operations
 - Clean syntax with zero dependencies
 
