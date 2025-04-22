@@ -29,61 +29,82 @@
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
-## 🧐 About <a name = "about"></a>
-ZynkLite is a programming language made in python, the objective is remake this in C for a better speed at programs.
+## 🚀 About ZynkLite
 
-## Currently Working on <a name = "current"></a>
-- Structures
-- Better Module Importing
-- Language Interoperability
-- Arrays
-- Bytecode
+ZynkLite is a lightweight, embeddable scripting language developed in Python with plans for a high-performance C implementation. Designed for simplicity and extensibility, it features:
 
-## 🏁 Getting Started <a name = "getting_started"></a>
-How to install zynk-py
+✔️ Native file I/O operations  
+✔️ Array manipulation functions
+✔️ Sleep function
+✔️ Modular import system  
+✔️ Clean, minimal syntax  
+✔️ String & Float conversion methods
+
+**Current Focus**:  
+- Bytecode compiler development  
+- Performance optimizations  
+- Enhanced module system  
+
+## 📦 Installation
 
 ### Prerequisites
-What things you need to install ZynkLite and how to install them.
+- Python 3.6+
+- pip package manager
 
-- ```Python3``` → [python3](https://python.org)
-- ```pip``` → [pip](https://bootstrap.pypa.io/get-pip.py)
-
-
-### Installing
-
+### Quick Install
+```bash
+pip install zynk-lite
+```
+### Linux Mime Types (Optional)
+clone git repository
+```bash
+git clone https://github.com/Guille-ux/ZynkLite.git
+cd ZynkLite
+```
+move on mimes and install
 
 ```bash
-pip install zynk-py
+cd mimes && bash install.sh
 ```
-if you want the mime-types go to mimes and run (only on linux)
 
+## Usage
+### Command Line Interface (CLI)
 ```bash
-bash install.sh
+zynkl cli # Zynk Interactive Shell
+zynkl run program.zl # run a zynk program
 ```
 
-
-now you can import the interpreter!
-
-## 🎈 Usage <a name="usage"></a>
+### Python API
 ```python
 from zynk_lite import interpreter as intp
 
-iterpreter = intp.ZynkLInterpreter() # options like stdlib path or debug...
-interpreter.eval('print "hola";') # example
-# or if you want run a file...
-interpreter.eval_file("program.zl") # program path
+zl = intp.ZynkLInterpreter(debug=True)  # Configure as needed
+zl.eval('print "Hello World";')         # Direct evaluation
+zl.eval_file("app.zl")                  # Run from file
 ```
 
-or use the command line
-```bash
-zynkl run [file]
-```
-run files
-```bash
-zynkl cli
-```
-Interactive Interpreter
+## Key Features
+- **Interpreter**: easy to debug but slow.
+- **Interpreter inside**: more slow.
+- **Turing Complete**: You can run enything on this.
 
+## RoadMap
+- Basic interpreter implementation
+
+- File I/O operations
+
+- Bytecode compiler (in progress)
+
+- C transpiler target (if you want an extra speed)
+
+- Standard library modules (i want to add json and csv, readers, AI too, idk)
+
+## Documentation
+Sorry, but i dont finished this yet, wait please.
+
+## Contributing
+Only make a pull request and you will be here.
+(The rules can change in the future)
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 - [Python3](https://python.org)

@@ -17,5 +17,12 @@ var r;
 call isAdult(16) to r;
 print r;
 
+var h = [2, 3];
+print h;
+call push (h, 3);
+print h;
+
+call write("ns.txt", "hola");
+
 """
 interpreter.eval(case)

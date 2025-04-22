@@ -19,10 +19,77 @@ class ZynkNativeFunc:
 def clock(args):
     return time.time()
 
+def lenght(args):
+    return len(args[0])
+def get_index(args):
+    return args[0][args[1]]
+def set_index(args):
+    args[0][args[1]]=args[2]
+    return None
+def push(args):
+    args[0].append(args[1])
+    return None
+
+#FUNCIONES DE IO y otras cosas, hay que recordar que esto son modulos al fin de al cabo
+#el interprete de C no tendra todas estas, tendra otras
+#jijijiji, ya me pondre a hacer el bytecode
+#
+
+#
+#  args[0] es el nombre
+# cuando sea necesario args[1] es la información
+
+def write_file(args):
+    name = args[0]
+    data = args[1]
+    with open(name, "w") as f:
+        f.write(data)
+def read_file(args):
+    name = args[0]
+    with open(name, "r") as f:
+        data = f.read()
+    return data
+def write_bytes(args):
+    name = args[0]
+    data = args[1]
+    with open(name, "wb") as f:
+        f.write(data)
+def read_bytes(args):
+    name = args[0]
+    with open(name, "rb") as f:
+        data = f.read()
+    return data
+
+# float a str y viceversa
+def tfloat(args):
+    return float(args[0])
+def tstr(args):
+    return str(args[0])
+
+# time
 nclock = ZynkNativeFunc(clock)
+
+# arrays
+nlenght = ZynkNativeFunc(lenght)
+nget_index = ZynkNativeFunc(get_index)
+nset_index = ZynkNativeFunc(set_index)
+npush = ZynkNativeFunc(push)
+
+#archivos
+nwf = ZynkNativeFunc(write_file)
+nrf = ZynkNativeFunc(read_file)
+nwb = ZynkNativeFunc(write_bytes)
+nrb = ZynkNativeFunc(read_bytes)
+
+# conversion
+
+ntf = ZynkNativeFunc(tfloat)
+nts = ZynkNativeFunc(tstr)
 
 def add_natives(eval, funcs):
     for k, v in funcs.items():
         eval.env.define(k, v)
 
-core_funcs = {"clock":nclock}
+
+# CORE FUNCS
+core_funcs = {"clock":nclock, "len":nlenght, "get_index":nget_index, "set_index":nset_index, "push":npush, "write":nwf, "read":nrf, "write_bytes":nwb, "read_bytes":nrb, "str":nts, "float":ntf}

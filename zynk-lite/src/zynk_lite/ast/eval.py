@@ -27,6 +27,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         else:
             self.stdlib_path = standard_lib_path
         core.add_natives(self, core.core_funcs)
+        self._module_cache = {}
     def subenv(self):
         new = zenv.Enviroment(self.env)
         return new
@@ -152,6 +153,12 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             if self.debug:
                 print("[+] Trying to Load from Standard Library [+]")
             filepath = os.path.join(self.stdlib_path, filename)
+        if filepath in self._module_cache:
+            module = self._module_cache[filepath]
+            self.env.define(self.eval(expr.alias), module)
+            if self.debug:
+                print("[+] Module Loaded From Cache [+]")
+            return None
         with open(filepath, "r") as f:
             if self.debug:
                 print(f"[+] Loading {self.eval(expr.name)} from {filepath} [+]")
@@ -170,6 +177,7 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             module = zexpr.Module(self.eval(expr.name), self.env)
             self.undo()
             self.env.define(self.eval(expr.alias), module)
+            self._module_cache[filepath] = module
             return None
 
     def visit_for(self, expr):
@@ -186,11 +194,43 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         self.ret = self.eval(expr.expression)
         return self.ret
     def visit_array_expr(self, expr):
-        pass # tengo que implementarlo
+        return [self.eval(element) for element in expr.items]
     def visit_index_expr(self, expr):
-        pass # tengo que implementarlo
+        array = self.eval(expr.array)
+        index = self.eval(expr.index)
+        print(array)
+    
+    # Validaciones
+        if not isinstance(array, list):
+            raise errors.EvalError(expr, f"Expected array, got {type(array)}")
+        try:
+            index = int(index)
+        except (TypeError, ValueError):
+            raise errors.EvalError(expr, f"Array index must be integer, got {type(index)}")
+    
+        try:
+            return array[index]
+        except IndexError:
+            raise errors.EvalError(expr, f"Index {index} out of bounds")
+
     def visit_index_assign_expr(self, expr):
-        pass # tengo que implementarlo
+        array = self.eval(expr.array)
+        index = self.eval(expr.index)
+        value = self.eval(expr.value)
+        print(array)
+    
+        if not isinstance(array, list):
+            raise errors.EvalError(expr, f"Expected array, got {type(array)}")
+        try:
+            index = int(index)
+        except (TypeError, ValueError):
+            raise errors.EvalError(expr, f"Array index must be integer, got {type(index)}")
+    
+        try:
+            array[index] = value
+            return value
+        except IndexError:
+            raise errors.EvalError(expr, f"Index {index} out of bounds")
         
     # wow, añadi muchos metodos, me falta algo para arrays, aunque eso tambien en el lexer y expresiones deberia montar bucles for pues todavia no existen tambien algo para imports
     # esto es sencillo, creo que más tarde copiare esto pero en vez de interpretar que compile, estaria bien, de paso uso patrones de diseño

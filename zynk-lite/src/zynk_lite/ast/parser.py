@@ -91,9 +91,27 @@ class AlgebraicParser: # tremend descenso recursivo
                 else:
                     raise SyntaxError("Expected identifier after a dot")
             return zexpr.Identifier(self.prev().lexem)
+        elif self.eat(tokens.TokenType.LBRACKET):
+            return self.parse_array()
         else:
             raise SyntaxError(f"Unexpected Token {self.tokens[self.current]}")
 
+    def parse_array(self):
+        elements = []
+        current_element = []
+        while not self.is_at_end():
+            if self.eat(tokens.TokenType.RBRACKET):
+                elements.append(self.algebraic(current_element))
+                break
+            elif self.eat(tokens.TokenType.COMMA):
+                elements.append(self.algebraic(current_element))
+                current_element = []
+            else:
+                current_element.append(self.advance())
+        return zexpr.ArrayExpr(elements)
+    def algebraic(self, toks):
+        psd = AlgebraicParser(toks, self.debug)
+        return psd.parse()
 
 # monte eso a escondidas a 4 am
 # código clandestino
@@ -146,11 +164,13 @@ class ZynkLParser:
         first = self.prev()
         if self.eat(tokens.TokenType.DOT):
             if self.eat(tokens.TokenType.IDENTIFIER):
-                return zexpr.MIdentifier(first.lexem, self.prev().lexem)
+                p = self.prev().lexem
+                return zexpr.MIdentifier(first.lexem, p)
             else:
                 raise SyntaxError("Expected Identifier After dot")
         else:
-            return zexpr.Identifier(self.prev().lexem)
+            p = first.lexem
+            return zexpr.Identifier(p)
     def algebraic(self, toks):
         psd = AlgebraicParser(toks, self.debug)
         return psd.parse()
@@ -349,3 +369,15 @@ class ZynkLParser:
                 arg = []
             arg.append(self.advance())
         return args
+
+        # el gran deepseek me ayudo un poco con alguna optimización y ahora con arrays, quiero pasar ya al bytecode
+    def parse_array(self):
+        elements = []
+        arg = []
+        while not self.is_at_end():
+            if self.eat(tokens.TokenType.COMMA):
+                elements.append(self.algebraic(arg))
+                arg = []
+            elif self.eat(tokens.TokenType.RBRACKET):
+                arg.append(self.advance())
+        return zexpr.ArrayExpr(elements)
