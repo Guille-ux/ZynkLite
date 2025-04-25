@@ -5,10 +5,10 @@
 # clase core de las funciones nativas y alguna que otra función
 
 import time
+import random
 
 
-
-class ZynkNativeFunc:
+class ZynkNativeFunc: #emulador de funciones
     def __init__(self, func):
         self.func = func
     def call(self, interpreter, args):
@@ -16,8 +16,24 @@ class ZynkNativeFunc:
     def __repr__(self):
         return f"<native fn>"
 
+#tiempo
+
 def clock(args):
     return time.time()
+def slep(args):
+    time.sleep(args[0])
+    return None
+
+#random
+def choic(args):
+    return random.choice(args[0])
+def randi(args):
+    return random.randint(min(int(args[0]), int(args[1])), max(int(args[0]), int(args[1])))
+def randf(args):
+    return random.uniform(min(args[0], args[1]), max(args[0], args[1]))
+def rand(args):
+    return random.random()
+#arrays
 
 def lenght(args):
     return len(args[0])
@@ -28,6 +44,9 @@ def set_index(args):
     return None
 def push(args):
     args[0].append(args[1])
+    return None
+def pup(args):
+    args[0].pop(int(args[1]))
     return None
 
 #FUNCIONES DE IO y otras cosas, hay que recordar que esto son modulos al fin de al cabo
@@ -70,12 +89,14 @@ def tint(args):
 
 # time
 nclock = ZynkNativeFunc(clock)
+nsleep = ZynkNativeFunc(slep)
 
 # arrays
 nlenght = ZynkNativeFunc(lenght)
 nget_index = ZynkNativeFunc(get_index)
 nset_index = ZynkNativeFunc(set_index)
 npush = ZynkNativeFunc(push)
+npop = ZynkNativeFunc(pup)
 
 #archivos
 nwf = ZynkNativeFunc(write_file)
@@ -89,11 +110,36 @@ ntf = ZynkNativeFunc(tfloat)
 nts = ZynkNativeFunc(tstr)
 nti = ZynkNativeFunc(tint)
 
+#números aleatorios
+
+nchoice = ZynkNativeFunc(choic)
+nrandint = ZynkNativeFunc(randi)
+nrandf = ZynkNativeFunc(randf)
+nrandom = ZynkNativeFunc(rand)
+
 def add_natives(eval, funcs):
     for k, v in funcs.items():
         eval.env.define(k, v)
 
 
 # CORE FUNCS
-core_funcs = {"clock":nclock, "len":nlenght, "get_index":nget_index, "set_index":nset_index, "push":npush, "write":nwf, "read":nrf, "write_bytes":nwb, "read_bytes":nrb, "str":nts, "float":ntf,
-"int":nti}
+core_funcs = {
+    "clock":nclock,
+    "len":nlenght,
+    "get_index":nget_index,
+    "set_index":nset_index,
+    "push":npush,
+    "write":nwf,
+    "read":nrf,
+    "write_bytes":nwb,
+    "read_bytes":nrb,
+    "str":nts,
+    "float":ntf,
+    "int":nti,
+    "pop":npop,
+    "sleep":nsleep,
+    "choice":nchoice,
+    "randi":nrandint,
+    "randf":nrandf,
+    "rand":nrandom
+}
