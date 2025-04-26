@@ -22,7 +22,10 @@ def main():
             opt = input(">>> ")
             if opt=="quit" or opt=="exit":
                 break
-            interpreter.eval(opt)
+            try:
+                interpreter.eval(opt)
+            except Exception as e:
+                print(f"[!] Error: {e} [!]")
         print("[-] ZynkLite Terminated [-]")
     else:
         print("[!] BAD USAGE → zynkl [run/cli] [file] [!]")
