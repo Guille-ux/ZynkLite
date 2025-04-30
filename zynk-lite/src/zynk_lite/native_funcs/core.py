@@ -6,6 +6,7 @@
 
 import time
 import random
+import os
 
 
 class ZynkNativeFunc: #emulador de funciones
@@ -63,6 +64,7 @@ def write_file(args):
     data = args[1]
     with open(name, "w") as f:
         f.write(data)
+    return None
 def read_file(args):
     name = args[0]
     with open(name, "r") as f:
@@ -73,11 +75,29 @@ def write_bytes(args):
     data = args[1]
     with open(name, "wb") as f:
         f.write(data)
+    return None
 def read_bytes(args):
     name = args[0]
     with open(name, "rb") as f:
         data = f.read()
     return data
+def makedir(args):
+    os.makedirs(args[0])
+    return None
+def listdir(args):
+    return os.listdir()
+def pwd(args):
+    return os.chown()
+def cwd(args):
+    os.chdir(args[0])
+    return None
+def rmdir(args):
+    os.removedirs(args[0])
+    return None
+def remove(args):
+    os.remove(args[0])
+    return None
+
 
 # float a str y viceversa
 def tfloat(args):
@@ -117,6 +137,15 @@ nrandint = ZynkNativeFunc(randi)
 nrandf = ZynkNativeFunc(randf)
 nrandom = ZynkNativeFunc(rand)
 
+
+#other filesystem interactions
+nmakedir = ZynkNativeFunc(makedir)
+nlistdir = ZynkNativeFunc(listdir)
+npwd = ZynkNativeFunc(pwd)
+ncwd = ZynkNativeFunc(cwd)
+nrmdir = ZynkNativeFunc(rmdir)
+nremove = ZynkNativeFunc(remove)
+
 def add_natives(eval, funcs):
     for k, v in funcs.items():
         eval.env.define(k, v)
@@ -141,5 +170,11 @@ core_funcs = {
     "choice":nchoice,
     "randi":nrandint,
     "randf":nrandf,
-    "rand":nrandom
+    "rand":nrandom,
+    "mkdir":nmakedir,
+    "listdir":nlistdir,
+    "pwd":npwd,
+    "cwd":ncwd,
+    "rmdir":nrmdir,
+    "remove":nremove
 }
