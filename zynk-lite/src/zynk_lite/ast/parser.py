@@ -229,17 +229,6 @@ class ZynkLParser:
         elif tok.type == tokens.TokenType.SEMICOLON:
             self.advance()
             return None
-        elif tok.type == tokens.TokenType.PRINT:
-            expression = self.parse_expression()
-            return zexpr.PrintStmt(expression)
-        elif tok.type == tokens.TokenType.INPUT:
-            expr = self.algebraic(self.until_to())
-            if self.prev().type == tokens.TokenType.TO:
-                to = self.advance().lexem
-                if not self.advance().type == tokens.TokenType.SEMICOLON:
-                    raise SyntaxError("Expected Semicolon")
-                return zexpr.InputStmt(expr, to)
-            return zexpr.InputStmt(expr, None)
         elif tok.type == tokens.TokenType.EOF:
             return None
     def parse_call(self):

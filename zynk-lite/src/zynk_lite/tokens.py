@@ -59,8 +59,6 @@ class TokenType:
     FOR = 40
 
     # built-in
-    INPUT = 41
-    PRINT = 42
     IMPORT = 43
     
     # IDK

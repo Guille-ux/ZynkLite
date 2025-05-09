@@ -183,10 +183,6 @@ class ZynkLLexer:
         elif char==",":
         # BUILT-IN
             self.add_token(tokens.TokenType.COMMA, ",")
-        elif self.match_sequence("print"):
-            self.add_token(tokens.TokenType.PRINT, "print")
-        elif self.match_sequence("input"):
-            self.add_token(tokens.TokenType.INPUT, "input")
         elif self.match_sequence("import"):
             self.add_token(tokens.TokenType.IMPORT, "import")
         # Other Types

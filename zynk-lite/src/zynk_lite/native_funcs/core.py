@@ -107,6 +107,13 @@ def tstr(args):
 def tint(args):
     return int(args[0])
 
+# input y print
+def nprint(args):
+    print(args[0])
+    return None
+def ninput(args):
+    return input(args[0])
+
 # time
 nclock = ZynkNativeFunc(clock)
 nsleep = ZynkNativeFunc(slep)
@@ -146,6 +153,10 @@ ncwd = ZynkNativeFunc(cwd)
 nrmdir = ZynkNativeFunc(rmdir)
 nremove = ZynkNativeFunc(remove)
 
+# input and print
+ninp = ZynkNativeFunc(ninput)
+npri = ZynkNativeFunc(nprint)
+
 def add_natives(eval, funcs):
     for k, v in funcs.items():
         eval.env.define(k, v)
@@ -176,5 +187,7 @@ core_funcs = {
     "pwd":npwd,
     "cwd":ncwd,
     "rmdir":nrmdir,
-    "remove":nremove
+    "remove":nremove,
+    "print":npri,
+    "input":ninp
 }
