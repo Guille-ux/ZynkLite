@@ -87,7 +87,7 @@ def makedir(args):
 def listdir(args):
     return os.listdir()
 def pwd(args):
-    return os.chown()
+    return os.getcwd()
 def cwd(args):
     os.chdir(args[0])
     return None
