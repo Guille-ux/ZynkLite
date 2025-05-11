@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2025-present Guille <guilleleiratemes@gmail.com>
 #
-# SPDX-License-Identifier: GPLv3
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # clase core de las funciones nativas y alguna que otra función
 
