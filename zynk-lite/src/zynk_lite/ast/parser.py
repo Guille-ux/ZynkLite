@@ -84,6 +84,15 @@ class AlgebraicParser: # tremend descenso recursivo
             return expr
         elif self.eat_more(tokens.TokenType.STRING, tokens.TokenType.FLOAT, tokens.TokenType.BOOL, tokens.TokenType.NULL):
             return zexpr.Literal(self.prev().value)
+        elif self.eat(tokens.TokenType.CALL):
+            if not self.eat(tokens.TokenType.IDENTIFIER):
+                raise SyntaxError("Expected Identifier")
+            idtf = zexpr.Identifier(self.prev().lexem)
+            if not self.eat(tokens.TokenType.LPAREN):
+                raise SyntaxError("Expected Paren")
+            args = self.get_args()
+            args = [self.algebraic(arg) for arg in args if arg]
+            return zexpr.CallFunc(idtf, args, None)
         elif self.eat(tokens.TokenType.IDENTIFIER):
             if self.eat(tokens.TokenType.DOT):
                 if self.eat(tokens.TokenType.IDENTIFIER):
@@ -95,7 +104,18 @@ class AlgebraicParser: # tremend descenso recursivo
             return self.parse_array()
         else:
             raise SyntaxError(f"Unexpected Token {self.tokens[self.current]}")
-
+    def get_args(self):
+        args = []
+        arg = []
+        while not self.is_at_end():
+            if self.eat(tokens.TokenType.RPAREN):
+                args.append(arg)
+                break
+            elif self.eat(tokens.TokenType.COMMA):
+                args.append(arg)
+                arg = []
+            arg.append(self.advance())
+        return args
     def parse_array(self):
         elements = []
         current_element = []
@@ -180,12 +200,14 @@ class ZynkLParser:
             stmt = self.parse_stmt()
             if stmt is not None:
                 statements.append(stmt)
-        return statements
+        return zexpr.BlockExpr(statements)
     def parse_stmt(self):
         tok = self.actual()
         self.advance()
         if tok is None:
             return None
+        elif tok.type==tokens.TokenType.BREAK:
+            return zexpr.BreakExpr()
         elif tok.type==tokens.TokenType.RETURN:
             expre = self.parse_expression()
             return zexpr.ReturnExpr(expre)
@@ -283,7 +305,7 @@ class ZynkLParser:
             else:
                 block.append(self.advance())
         subparse = ZynkLParser(block, self.debug)
-        return zexpr.BlockExpr(subparse.parse())
+        return subparse.parse()
     def parse_if(self):
         if not self.eat(tokens.TokenType.LPAREN):
             raise SyntaxError("Expected Paren after if")

@@ -15,8 +15,7 @@ class ZynkLInterpreter:
         tokens = lex.scan()
         par = parser.ZynkLParser(tokens, self.debug)
         parsed = par.parse()
-        for stmt in parsed:
-            self.evaluator.eval(stmt)
+        self.evaluator.eval(parsed)
         if self.debug:
             print(tokens)
             print(parsed)

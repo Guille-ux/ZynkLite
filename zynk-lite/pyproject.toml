@@ -42,6 +42,7 @@ check = "mypy --install-types --non-interactive {args:src/zynk_lite tests}"
 
 [project.scripts]
 zynkl = "zynk_lite.cli:main"
+cynk = "zynk_lite.cynk_cli:main"
 
 [tool.coverage.run]
 source_pkgs = ["zynk_lite", "tests"]

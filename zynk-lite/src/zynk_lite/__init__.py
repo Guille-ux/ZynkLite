@@ -10,3 +10,6 @@ from . import ast
 from . import bytecode
 from . import frontend
 from . import native_funcs
+from . import transpiler
+from . import c_base
+from . import test_trans

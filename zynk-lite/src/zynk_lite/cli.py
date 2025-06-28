@@ -9,7 +9,9 @@ import sys
 
 
 def main():
-    if sys.argv[1]=="run":
+    if len(sys.argv) < 1:
+        print("[ Error, at least 1 arg is needed ]")
+    elif sys.argv[1]=="run":
         filepath = sys.argv[2]
         interpreter = intp.ZynkLInterpreter()
         interpreter.eval_file(filepath)

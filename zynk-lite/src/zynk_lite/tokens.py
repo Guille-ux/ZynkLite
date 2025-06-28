@@ -57,6 +57,7 @@ class TokenType:
     IF = 38
     WHILE = 39
     FOR = 40
+    BREAK = 46
 
     # built-in
     IMPORT = 43

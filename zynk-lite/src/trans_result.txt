@@ -1,0 +1,401 @@
+[+] Testing Mathematical Expressions [+]
+[+] Expr : 2 + 3 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 3] : [+]
+[+] : Token : [ 18 : + : None ] at [1 : 5] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 7] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 7] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Literal : 2.0 ] : + : [ Literal : 3.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkValuesAdd(cynkPop(), cynkPop()));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkValuesAdd(cynkPop(), cynkPop()));
+
+[+] Expr : 5*2 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 5 : 5.0 ] at [1 : 3] : [+]
+[+] : Token : [ 15 : * : None ] at [1 : 4] : [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 5] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 5] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Literal : 5.0 ] : * : [ Literal : 2.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+
+[+] Expr : 7-1 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 7 : 7.0 ] at [1 : 3] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 4] : [+]
+[+] : Token : [ 10 : 1 : 1.0 ] at [1 : 5] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 5] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Literal : 7.0 ] : - : [ Literal : 1.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(7.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(7.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Expr : 5*3-1 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 5 : 5.0 ] at [1 : 3] : [+]
+[+] : Token : [ 15 : * : None ] at [1 : 4] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 6] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 7] : [+]
+[+] : Token : [ 10 : 1 : 1.0 ] at [1 : 8] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 8] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Literal : 5.0 ] : * : [ Literal : 3.0 ] ] : - : [ Literal : 1.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Expr : 4+2*2-1+3 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 4 : 4.0 ] at [1 : 3] : [+]
+[+] : Token : [ 18 : + : None ] at [1 : 4] : [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 6] : [+]
+[+] : Token : [ 15 : * : None ] at [1 : 7] : [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 9] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 10] : [+]
+[+] : Token : [ 10 : 1 : 1.0 ] at [1 : 12] : [+]
+[+] : Token : [ 18 : + : None ] at [1 : 13] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 14] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 14] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Binary : [ Literal : 4.0 ] : + : [ Binary : [ Literal : 2.0 ] : * : [ Literal : 2.0 ] ] ] : - : [ Literal : 1.0 ] ] : + : [ Literal : 3.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkNumber(4.0));
+cynkPush(zynkValuesAdd(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkValuesAdd(cynkPop(), cynkPop()));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkNumber(4.0));
+cynkPush(zynkValuesAdd(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkValuesAdd(cynkPop(), cynkPop()));
+
+[+] Expr : 4*2/3-1 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 4 : 4.0 ] at [1 : 3] : [+]
+[+] : Token : [ 15 : * : None ] at [1 : 4] : [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 6] : [+]
+[+] : Token : [ 16 : / : None ] at [1 : 7] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 9] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 10] : [+]
+[+] : Token : [ 10 : 1 : 1.0 ] at [1 : 11] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 11] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Binary : [ Literal : 4.0 ] : * : [ Literal : 2.0 ] ] : / : [ Literal : 3.0 ] ] : - : [ Literal : 1.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(4.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkValuesDiv(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(4.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkValuesDiv(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Expr : 5*2-1/3*2 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 5 : 5.0 ] at [1 : 3] : [+]
+[+] : Token : [ 15 : * : None ] at [1 : 4] : [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 6] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 7] : [+]
+[+] : Token : [ 10 : 1 : 1.0 ] at [1 : 9] : [+]
+[+] : Token : [ 16 : / : None ] at [1 : 10] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 12] : [+]
+[+] : Token : [ 15 : * : None ] at [1 : 13] : [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 14] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 14] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Literal : 5.0 ] : * : [ Literal : 2.0 ] ] : - : [ Binary : [ Binary : [ Literal : 1.0 ] : / : [ Literal : 3.0 ] ] : * : [ Literal : 2.0 ] ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkValuesDiv(cynkPop(), cynkPop()));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkValuesDiv(cynkPop(), cynkPop()));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesMul(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Expr : 7/2+0.5-1 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 7 : 7.0 ] at [1 : 3] : [+]
+[+] : Token : [ 16 : / : None ] at [1 : 4] : [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 6] : [+]
+[+] : Token : [ 18 : + : None ] at [1 : 7] : [+]
+[+] : Token : [ 10 : 0.5 : 0.5 ] at [1 : 11] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 12] : [+]
+[+] : Token : [ 10 : 1 : 1.0 ] at [1 : 13] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 13] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Binary : [ Literal : 7.0 ] : / : [ Literal : 2.0 ] ] : + : [ Literal : 0.5 ] ] : - : [ Literal : 1.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(0.5));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(7.0));
+cynkPush(zynkValuesDiv(cynkPop(), cynkPop()));
+cynkPush(zynkValuesAdd(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(0.5));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(7.0));
+cynkPush(zynkValuesDiv(cynkPop(), cynkPop()));
+cynkPush(zynkValuesAdd(cynkPop(), cynkPop()));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+
+[+] Expr : 7 == 7 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 7 : 7.0 ] at [1 : 3] : [+]
+[+] : Token : [ 22 : == : None ] at [1 : 6] : [+]
+[+] : Token : [ 10 : 7 : 7.0 ] at [1 : 8] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 8] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Literal : 7.0 ] : == : [ Literal : 7.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(7.0));
+cynkPush(zynkNumber(7.0));
+cynkPush(zynkBool(zynkValuesEqual(cynkPop(), cynkPop())));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(7.0));
+cynkPush(zynkNumber(7.0));
+cynkPush(zynkBool(zynkValuesEqual(cynkPop(), cynkPop())));
+
+[+] Expr : 5 - 3 > 5 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 5 : 5.0 ] at [1 : 3] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 5] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 8] : [+]
+[+] : Token : [ 19 : > : None ] at [1 : 10] : [+]
+[+] : Token : [ 10 : 5 : 5.0 ] at [1 : 12] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 12] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Literal : 5.0 ] : - : [ Literal : 3.0 ] ] : > : [ Literal : 5.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkBool(zynkValuesGreater(cynkPop(), cynkPop())));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkBool(zynkValuesGreater(cynkPop(), cynkPop())));
+
+[+] Expr : 2 - 4 < 3 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 3] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 5] : [+]
+[+] : Token : [ 10 : 4 : 4.0 ] at [1 : 8] : [+]
+[+] : Token : [ 20 : < : None ] at [1 : 10] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 12] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 12] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Literal : 2.0 ] : - : [ Literal : 4.0 ] ] : < : [ Literal : 3.0 ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(4.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkBool(zynkValuesLess(cynkPop(), cynkPop())));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(4.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkBool(zynkValuesLess(cynkPop(), cynkPop())));
+
+[+] Expr : 2 < 3 and 5 > 3 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 3] : [+]
+[+] : Token : [ 20 : < : None ] at [1 : 5] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 8] : [+]
+[+] : Token : [ 27 : and : None ] at [1 : 12] : [+]
+[+] : Token : [ 10 : 5 : 5.0 ] at [1 : 15] : [+]
+[+] : Token : [ 19 : > : None ] at [1 : 17] : [+]
+[+] : Token : [ 10 : 3 : 3.0 ] at [1 : 19] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 19] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Literal : 2.0 ] : < : [ Literal : 3.0 ] ] : and : [ Binary : [ Literal : 5.0 ] : > : [ Literal : 3.0 ] ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkBool(zynkValuesGreater(cynkPop(), cynkPop())));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkBool(zynkValuesLess(cynkPop(), cynkPop())));
+cynkPush(zynkBool(zynkValuesAnd(cynkPop(), cynkPop())));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkBool(zynkValuesGreater(cynkPop(), cynkPop())));
+cynkPush(zynkNumber(3.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkBool(zynkValuesLess(cynkPop(), cynkPop())));
+cynkPush(zynkBool(zynkValuesAnd(cynkPop(), cynkPop())));
+
+[+] Expr : 2 - 1 > 2 or 5 - 1 < 10 [+]
+[+] Lexing... [+]
+[+] Lexing Process Finished [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 3] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 5] : [+]
+[+] : Token : [ 10 : 1 : 1.0 ] at [1 : 8] : [+]
+[+] : Token : [ 19 : > : None ] at [1 : 10] : [+]
+[+] : Token : [ 10 : 2 : 2.0 ] at [1 : 13] : [+]
+[+] : Token : [ 28 : or : None ] at [1 : 16] : [+]
+[+] : Token : [ 10 : 5 : 5.0 ] at [1 : 19] : [+]
+[+] : Token : [ 17 : - : None ] at [1 : 21] : [+]
+[+] : Token : [ 10 : 1 : 1.0 ] at [1 : 24] : [+]
+[+] : Token : [ 20 : < : None ] at [1 : 26] : [+]
+[+] : Token : [ 10 : 10 : 10.0 ] at [1 : 29] : [+]
+[+] : Token : [ 44 :  : None ] at [1 : 29] : [+]
+[+] Parsing... [+]
+[+] Parsing Process Finished [+]
+[+] AST (Abstract Syntax Tree) : [ Binary : [ Binary : [ Binary : [ Literal : 2.0 ] : - : [ Literal : 1.0 ] ] : > : [ Literal : 2.0 ] ] : or : [ Binary : [ Binary : [ Literal : 5.0 ] : - : [ Literal : 1.0 ] ] : < : [ Literal : 10.0 ] ] ] [+]
+[+] Transpiling to C... [+]
+[+] Code Transpiled! [+]
+[+] Current Context [+]
+cynkPush(zynkNumber(10.0));
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkBool(zynkValuesLess(cynkPop(), cynkPop())));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkBool(zynkValuesGreater(cynkPop(), cynkPop())));
+cynkPush(zynkBool(zynkValuesOr(cynkPop(), cynkPop())));
+
+[+] Final C Code [+]
+cynkPush(zynkNumber(10.0));
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(5.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkBool(zynkValuesLess(cynkPop(), cynkPop())));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkNumber(1.0));
+cynkPush(zynkNumber(2.0));
+cynkPush(zynkValuesSub(cynkPop(), cynkPop()));
+cynkPush(zynkBool(zynkValuesGreater(cynkPop(), cynkPop())));
+cynkPush(zynkBool(zynkValuesOr(cynkPop(), cynkPop())));
+

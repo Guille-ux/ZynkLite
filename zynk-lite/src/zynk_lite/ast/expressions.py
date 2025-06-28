@@ -189,6 +189,13 @@ class ZynkFunc:
             interpreter.ret = None
             interpreter.undo()
 
+class CynkFunc(ZynkFunc):
+    def call(self, trans, args):
+        return f"""
+    zynkCallFunction(env, "{self.declaration.name}", {trans.stack.spop()});
+
+    """
+
 class Module:
     def __init__(self, name, env):
         self.name = name
@@ -241,6 +248,13 @@ class IndexAssignExpr(Expr):
         return visitor.visit_index_assign_expr(self)
     def __str__(self):
         return f"[ Assign Index : {self.value} : {self.index} : {self.array} ]"
+
+
+class BreakExpr(Expr):
+    def accept(self, visitor):
+        return visitor.visit_break(self)
+    def __str__(self):
+        return "[ Break ]"
 
 
 # FUTURO ¿?

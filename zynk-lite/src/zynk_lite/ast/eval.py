@@ -63,6 +63,14 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             return left <= right
         elif expr.operand == ">=":
             return left >= right
+        elif expr.operand == "and":
+            return left and right
+        elif expr.operand == "or":
+            return left or right
+        elif expr.operand == "^":
+            return left ^ right
+        elif expr.operand == "!=":
+            return left != right
         else:
             error = errors.EvalError(expr, f"Invalid Binary Operand '{expr.operand}'!")
             if self.debug:

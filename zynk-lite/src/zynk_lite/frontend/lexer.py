@@ -6,7 +6,7 @@ from .. import errors
 from .. import tokens
 
 class ZynkLLexer:
-    def __init__(self, source, debug=False):
+    def __init__(self, source, debug=False, comillas='"'):
         self.debug = debug
         self.source = source # código fuente
         self.current = 0 # posición actual + 1
@@ -16,6 +16,7 @@ class ZynkLLexer:
         self.error = False
         self.tokens = [] # tokens de salida
         self.var_set = "abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ_"
+        self.comillas=comillas
         # fin de lo necesario actualmente
     def is_at_end(self): # para saber si llegamos al final del código
         return self.current >= len(self.source)
@@ -64,6 +65,7 @@ class ZynkLLexer:
                     self.column = 1
                     self.advance()
                     break
+                self.column+=1
                 char = self.advance()
             return True
         return False
@@ -90,7 +92,7 @@ class ZynkLLexer:
         start = self.current - 1
         while not self.is_at_end():
             char = self.advance()
-            if char == '"':
+            if char == self.comillas:
                 break
         return self.source[start:self.current]
     def identifier_lex(self):
@@ -113,7 +115,7 @@ class ZynkLLexer:
     def scan_token(self):
         char = self.advance()
         if self.skip_comment():
-            pass
+            return
         elif char=="\n":
             self.column = 1
             self.line += 1
@@ -134,7 +136,7 @@ class ZynkLLexer:
         elif char==";":
             self.add_token(tokens.TokenType.SEMICOLON, ";") # SEMICOLON
         # VALORES
-        elif char=='"': # String's
+        elif char==self.comillas: # String's
             lexem = self.string_lex()
             value = lexem[1:-1]
             self.add_token(tokens.TokenType.STRING, lexem, value)
@@ -222,6 +224,8 @@ class ZynkLLexer:
             self.add_token(tokens.TokenType.ELSE, "else")
         elif self.match_sequence("as"):
             self.add_token(tokens.TokenType.AS)
+        elif self.match_sequence("break"):
+            self.add_token(tokens.TokenType.BREAK)
         elif char in self.var_set:
             self.add_token(tokens.TokenType.IDENTIFIER, self.identifier_lex())
         else:
