@@ -97,7 +97,7 @@ class Transpiler:
         if self.debug:
             print(f"[ AST : {ast_root_statements} ]")
         self.cynk_translator.context = "" 
-        ast_root_statements.accept(self.cynk_translator)
+        self.cynk_translator.visit_block(ast_root_statements, origin=False)
         self.main_program_c_code = self.cynk_translator.pop_ctx()
 
         final_c_output_parts = []

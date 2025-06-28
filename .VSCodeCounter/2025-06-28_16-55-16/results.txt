@@ -1,0 +1,81 @@
+Date : 2025-06-28 16:55:16
+Directory : /media/guille/KINGSTON/GPacks/ZynkLite
+Total : 36 files,  2306 codes, 256 comments, 318 blanks, all 2880 lines
+
+Languages
++--------------+------------+------------+------------+------------+------------+
+| language     | files      | code       | comment    | blank      | total      |
++--------------+------------+------------+------------+------------+------------+
+| Python       |         29 |      1,966 |        248 |        187 |      2,401 |
+| Markdown     |          3 |        187 |          0 |         55 |        242 |
+| C            |          1 |        137 |          7 |         68 |        212 |
+| XML          |          1 |          8 |          0 |          1 |          9 |
+| Shell Script |          2 |          8 |          1 |          7 |         16 |
++--------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                    | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                       |         36 |      2,306 |        256 |        318 |      2,880 |
+| . (Files)                                                                               |          1 |         86 |          0 |         31 |        117 |
+| mimes                                                                                   |          2 |         14 |          1 |          7 |         22 |
+| mimes (Files)                                                                           |          1 |          6 |          1 |          6 |         13 |
+| mimes/package                                                                           |          1 |          8 |          0 |          1 |          9 |
+| zynk-lite                                                                               |         33 |      2,206 |        255 |        280 |      2,741 |
+| zynk-lite (Files)                                                                       |          3 |         59 |          3 |         16 |         78 |
+| zynk-lite/docs                                                                          |          1 |         68 |          0 |         11 |         79 |
+| zynk-lite/src                                                                           |         28 |      2,079 |        249 |        252 |      2,580 |
+| zynk-lite/src (Files)                                                                   |          1 |        137 |          7 |         68 |        212 |
+| zynk-lite/src/zynk_lite                                                                 |         27 |      1,942 |        242 |        184 |      2,368 |
+| zynk-lite/src/zynk_lite (Files)                                                         |         10 |        367 |         73 |         55 |        495 |
+| zynk-lite/src/zynk_lite/ast                                                             |          5 |        786 |        105 |         68 |        959 |
+| zynk-lite/src/zynk_lite/bytecode                                                        |          1 |          0 |          3 |          0 |          3 |
+| zynk-lite/src/zynk_lite/c_base                                                          |          7 |        427 |         18 |         24 |        469 |
+| zynk-lite/src/zynk_lite/frontend                                                        |          2 |        219 |         16 |          9 |        244 |
+| zynk-lite/src/zynk_lite/native_funcs                                                    |          2 |        143 |         27 |         28 |        198 |
+| zynk-lite/tests                                                                         |          1 |          0 |          3 |          1 |          4 |
++-----------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+
+| filename                                                                                | language     | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+
+| /media/guille/KINGSTON/GPacks/ZynkLite/README.md                                        | Markdown     |         86 |          0 |         31 |        117 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/mimes/install.sh                                 | Shell Script |          6 |          1 |          6 |         13 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/mimes/package/application-x-zynk.xml             | XML          |          8 |          0 |          1 |          9 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/README.md                              | Markdown     |         33 |          0 |         13 |         46 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/build.sh                               | Shell Script |          2 |          0 |          1 |          3 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/dev.py                                 | Python       |         24 |          3 |          2 |         29 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/docs/README.md                         | Markdown     |         68 |          0 |         11 |         79 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/final_program.c                    | C            |        137 |          7 |         68 |        212 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/__about__.py             | Python       |          1 |          3 |          1 |          5 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/__init__.py              | Python       |         11 |          3 |          2 |         16 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/ast/__init__.py          | Python       |          4 |          3 |          1 |          8 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/ast/eval.py              | Python       |        226 |          9 |         15 |        250 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/ast/expressions.py       | Python       |        163 |         83 |         37 |        283 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/ast/parser.py            | Python       |        375 |          7 |         13 |        395 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/ast/zenv.py              | Python       |         18 |          3 |          2 |         23 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/bytecode/__init__.py     | Python       |          0 |          3 |          0 |          3 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/c_base/__init__.py       | Python       |          6 |          0 |          1 |          7 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/c_base/funcs.py          | Python       |         33 |          3 |          3 |         39 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/c_base/initialize.py     | Python       |         16 |          3 |          4 |         23 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/c_base/mem.py            | Python       |         16 |          3 |          3 |         22 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/c_base/stack.py          | Python       |         13 |          3 |          1 |         17 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/c_base/templates.py      | Python       |        187 |          3 |          7 |        197 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/c_base/translator.py     | Python       |        156 |          3 |          5 |        164 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/cli.py                   | Python       |         26 |          4 |          4 |         34 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/compiler.py              | Python       |          0 |          3 |          0 |          3 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/cynk_cli.py              | Python       |         71 |          3 |          5 |         79 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/errors.py                | Python       |         26 |          3 |          3 |         32 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/frontend/__init__.py     | Python       |          1 |          3 |          1 |          5 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/frontend/lexer.py        | Python       |        218 |         13 |          8 |        239 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/interpreter.py           | Python       |         20 |          3 |          3 |         26 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/native_funcs/__init__.py | Python       |          1 |          3 |          1 |          5 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/native_funcs/core.py     | Python       |        142 |         24 |         27 |        193 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/test_trans.py            | Python       |         42 |          0 |          3 |         45 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/tokens.py                | Python       |         57 |         11 |         10 |         78 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/src/zynk_lite/transpiler.py            | Python       |        113 |         40 |         24 |        177 |
+| /media/guille/KINGSTON/GPacks/ZynkLite/zynk-lite/tests/__init__.py                      | Python       |          0 |          3 |          1 |          4 |
+| Total                                                                                   |              |      2,306 |        256 |        318 |      2,880 |
++-----------------------------------------------------------------------------------------+--------------+------------+------------+------------+------------+

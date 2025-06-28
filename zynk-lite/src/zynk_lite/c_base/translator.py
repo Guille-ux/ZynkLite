@@ -31,6 +31,8 @@ class Cynk(eval.ZynkLEval): # C Transpiler for Zynk
     def emit_ctx(self, context):
         self.code.append(context)
         self.context = ""
+    def emit_c(self):
+        self.emit_ctx(self.context)
     def pop_ctx(self):
         try:
             return self.context
@@ -119,11 +121,14 @@ class Cynk(eval.ZynkLEval): # C Transpiler for Zynk
         self.emit("}")
     def visit_grouping(self, expr):
         return self.eval(expr)
-    def visit_block(self, expr):
-        self.emit(self.tables.emit_nenv())
+    def visit_block(self, expr, origin=True):
+        self.emit_c()
+        if origin:
+            self.emit(self.tables.emit_nenv())
         for stmt in expr.body:
             self.eval(stmt)
-        self.emit(self.tables.emit_ret_env())
+        if origin:
+            self.emit(self.tables.emit_ret_env())
     def visit_if(self, expr):
         self.eval(expr.condition)
         self.emit(f"if ({self.stack.spop()}.as.boolean)" + " {\n")
@@ -131,14 +136,14 @@ class Cynk(eval.ZynkLEval): # C Transpiler for Zynk
         self.emit("}\n")
         if expr.else_branch is not None:
             self.emit("else {\n")
-            self.eval(expr.else_branch)
+            self.visit_block(expr.else_branch)
             self.emit("}\n")
     def visit_while(self, expr, origin=True):
         if origin:
             self.emit(self.tables.emit_nenv())
         self.eval(expr.condition)
         self.emit(f"while ({self.stack.spop()}.as.boolean)" + "{\n")
-        self.eval(expr.body)
+        self.visit_block(expr.body, origin=False)
         self.eval(expr.condition)
         self.emit("}\n")
         if origin:
@@ -151,6 +156,7 @@ class Cynk(eval.ZynkLEval): # C Transpiler for Zynk
         self.eval(self.tables.emit_ret_env())
     def visit_return(self, expr):
         self.eval(expr.expression)
+        self.emit(self.tables.emit_ret_env())
         self.emit(f"return {self.stack.spop()};\n")
     def visit_array_expr(self, expr):
         self.emit("{")

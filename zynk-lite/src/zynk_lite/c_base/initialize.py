@@ -17,6 +17,6 @@ class InitProgram:
     def add(self, line):
         self.headers+=line+"\n"
     def add_func(self, fname): # para añadir las declaraciones, xD
-        self.add(f"Value {self.trans.prefix}_{fname}(ArenaManager *manager, ZynkEnv *env, ZynkArray args);")
+        self.add(f"Value {self.trans.prefix}_{fname}(ArenaManager *manager, ZynkEnv *env, ZynkArray *args);")
     def emit(self):
         return self.headers

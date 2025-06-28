@@ -20,14 +20,14 @@ class FuncMk:
         self.evaler.program_header.add_func(expr.name)
         func_code = self.func_init(expr.name)
         func_code += self.unpack(expr.params)
-        func_code += self.evaler.seval(expr.body)[-1]
-        self.evaler.code.pop(-1)
+        self.evaler.visit_block(expr.body, origin=False)
+        func_code += self.evaler.pop_ctx()
         func_code += self.end_func()
         return func_code
     def end_func(self):
         return f"{self.tables.emit_ret_env()}\n" + "return ret;" + "\n}"
     def unpack_first(self):
-        return "for (uint8_t i=0;i<args->len || i<256;i++) {\n\t\t" + self.stack.spush("args->value[i]") + "\n\t}\n\t"
+        return "for (uint8_t i=0;i<args->len && i<256;i++) {\n\t\t" + self.stack.spush("args->value[i]") + "\n\t}\n\t"
     def unpack_second(self, names):
         ret = ""
         for name in reversed(names):
