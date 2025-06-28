@@ -17,6 +17,7 @@ class Visitor:
 
 class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es maravilloso
     def __init__(self, standard_lib_path=None, enclosing=None, debug=False, extension=".zl"):
+        self.stop = False
         self.extension = extension
         self.debug = debug
         self.ret = None
@@ -120,6 +121,9 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
         try:
             result = None
             for stmt in expr.body:
+                if self.stop==True:
+                    self.stop=False
+                    break
                 result = self.eval(stmt)
             return result
         finally:
@@ -239,7 +243,13 @@ class ZynkLEval(Visitor): # tengo que decir que amo el patron del visitante, es 
             return value
         except IndexError:
             raise errors.EvalError(expr, f"Index {index} out of bounds")
-        
+    def visit_return(self, expr):
+        ret = self.eval(expr.expression)
+        self.stop=True
+        return ret
+    def visit_break(self, expr):
+        self.stop=True
+
     # wow, añadi muchos metodos, me falta algo para arrays, aunque eso tambien en el lexer y expresiones deberia montar bucles for pues todavia no existen tambien algo para imports
     # esto es sencillo, creo que más tarde copiare esto pero en vez de interpretar que compile, estaria bien, de paso uso patrones de diseño
     # el funcionamiento de ZynkLite va a hacer que me replantee mejoras en ZynkPy
