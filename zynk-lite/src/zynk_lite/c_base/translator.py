@@ -46,11 +46,11 @@ class Cynk(eval.ZynkLEval): # C Transpiler for Zynk
         elif isinstance(expr.value, bool):
             self.emit(self.stack.spush(f"zynkBool({str(expr.value).lower()})"))
         elif isinstance(expr.value, str):
-            self.emit(self.stack.spush(f'zynkCreateString(&sysarena, "{expr.value}")'))
+            self.emit(self.stack.spush(f'zynkCreateString("{expr.value}")'))
         elif isinstance(expr.value, float):
             self.emit(self.stack.spush(f"zynkNumber({expr.value})"))
         elif isinstance(expr.value, list):
-            self.emit(self.stack.spush(f"zynkCreateArray(&sysarena, {len(expr.value)})"))
+            self.emit(self.stack.spush(f"zynkCreateArray({len(expr.value)})"))
     def visit_binary(self, expr):
         expr.right.accept(self)
         expr.left.accept(self)
@@ -106,16 +106,16 @@ class Cynk(eval.ZynkLEval): # C Transpiler for Zynk
         self.emit(self.tables.emit_pget(expr.name, self.stack))
     def visit_func_definition(self, expr):
         self.program_header.add(self.fmaker.emit_func(expr))
-        ret = self.stack.spush(f"zynkCreateNativeFunction(&sysarena, {expr.name}, (ZynkFuncPtr){self.prefix}_{expr.name})") + "\n" + "\t"
+        ret = self.stack.spush(f"zynkCreateNativeFunction({expr.name}, (ZynkFuncPtr){self.prefix}_{expr.name})") + "\n" + "\t"
         ret += self.tables.emit_new(expr.name, self.stack)
         self.emit(ret)
     def visit_call_function(self, expr):
         self.emit("{")
-        self.emit(f"Value __tmp__=zynkCreateArray(&sysarena, {len(expr.args)});")
+        self.emit(f"Value __tmp__=zynkCreateArray({len(expr.args)});")
         for arg in expr.args:
             arg.accept(self)
-            self.emit(f"zynkArrayPush(&sysarena, __tmp__, {self.stack.spop()});")
-        self.emit(self.stack.spush(f'zynkCallFunction(&sysarena, env, "{expr.name.name}", __tmp__)'))
+            self.emit(f"zynkArrayPush(__tmp__, {self.stack.spop()});")
+        self.emit(self.stack.spush(f'zynkCallFunction(env, "{expr.name.name}", __tmp__)'))
         if expr.to is not None:
             self.emit(self.tables.emit_set(expr.to, self.stack))
         self.emit("}")
@@ -127,6 +127,7 @@ class Cynk(eval.ZynkLEval): # C Transpiler for Zynk
             self.emit(self.tables.emit_nenv())
         for stmt in expr.body:
             self.eval(stmt)
+            self.emit("index=0;\n")
         if origin:
             self.emit(self.tables.emit_ret_env())
     def visit_if(self, expr):
@@ -160,10 +161,10 @@ class Cynk(eval.ZynkLEval): # C Transpiler for Zynk
         self.emit(f"return {self.stack.spop()};\n")
     def visit_array_expr(self, expr):
         self.emit("{")
-        self.emit(f"Value __tmp__ = zynkCreateArray(&sysarena, {len(expr.items)});")
+        self.emit(f"Value __tmp__ = zynkCreateArray({len(expr.items)});")
         for item in expr.items:
             self.eval(item)
-            self.emit(f"zynkArrayPush(&sysarena, __tmp__, {self.stack.spop()});")
+            self.emit(f"zynkArrayPush(__tmp__, {self.stack.spop()});")
         self.emit(self.stack.spush("__tmp__"))
         self.emit("}\n")
     def visit_break(self, expr):

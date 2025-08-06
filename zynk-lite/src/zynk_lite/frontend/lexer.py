@@ -92,6 +92,9 @@ class ZynkLLexer:
         start = self.current - 1
         while not self.is_at_end():
             char = self.advance()
+            if char == "\\":
+                self.advance()
+                continue
             if char == self.comillas:
                 break
         return self.source[start:self.current]

@@ -16,9 +16,6 @@ class Transpiler:
         self.config = {
             "stack_max": templates.stack_defaults["stack_max"],
             "index_type": templates.stack_defaults["index_type"],
-            "num_arenas": templates.sysarena_defaults["num_arenas"],
-            "memory_size": templates.sysarena_defaults["memory_size"],
-            "a_or_b": templates.sysarena_defaults["a_or_b"], # "ANSI" o "STANDALONE"
             "table_cap": templates.zenv_defaults["table_cap"],
             "output_filename": "output.c",
             "main_function_name": "main",
@@ -106,11 +103,6 @@ class Transpiler:
             stack_max=self.config["stack_max"],
             index_type=self.config["index_type"]
         ))
-        final_c_output_parts.append(templates.sysarena_header.format(
-            num_arenas=self.config["num_arenas"],
-            memory_size=self.config["memory_size"],
-            a_or_b=self.config["a_or_b"]
-        ))
         final_c_output_parts.append(templates.zenv_headers.format(
             table_cap=self.config["table_cap"],
             cynk_header_names=templates.cynk_headers_defaults["cynk_header_names"]
@@ -122,19 +114,18 @@ class Transpiler:
         final_c_output_parts.append("\n// C Main Function and Zynk Entry Point\n")
         final_c_output_parts.append(f"""
 int {self.config["main_function_name"]}() {{
-    if (!cynkSysarenaInit()) {{
-        return 1;
-    }}
     
-    ZynkEnv *env = cynkEnvCreate(NULL, CYNK_ENV_CAP, &sysarena); 
+    ZynkEnv *env = cynkEnvCreate(NULL, CYNK_ENV_CAP); 
     if (env == NULL) {{
         return 1;
     }}
+    init_native_funcs(env);
     
     // Código Zynk de nivel superior transpiled
     {self.main_program_c_code}
 
-    cynkFreeEnv(env, &sysarena); 
+    // Liberar el entorno
+    cynkFreeEnv(env); 
     
     return 0;
 }}

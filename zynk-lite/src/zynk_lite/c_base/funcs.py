@@ -15,7 +15,7 @@ class FuncMk:
         self.tables=evaler.tables
         self.stack=evaler.stack
     def func_init(self, name):
-        return f"Value {self.evaler.prefix}_{name}(ArenaManager *manager, ZynkEnv *env, ZynkArray *args)" + " {" + f"\n \t {self.tables.emit_nenv()}\n\tValue ret;\n\t"
+        return f"Value {self.evaler.prefix}_{name}(ZynkEnv *env, ZynkArray *args)" + " {" + f"\n \t {self.tables.emit_nenv()}\n\tValue ret;\n\t"
     def emit_func(self, expr):
         self.evaler.program_header.add_func(expr.name)
         func_code = self.func_init(expr.name)

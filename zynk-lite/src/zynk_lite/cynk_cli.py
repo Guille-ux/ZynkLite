@@ -15,6 +15,10 @@ def cynk_help():
     print("[ -o : out file ]")
     print("[ -i : files included ]")
     print("[ -v : sets the debug flag of the transpiler ]")
+    print("[ --stack-max : sets the max stack capacity ]")
+    print("[ --table-max : sets the max table capacity ]")
+    print("[ --index-type : sets a custom type for stack index ]")
+    
 
 def main():
     help_flag=False
@@ -23,9 +27,9 @@ def main():
     out_file = "out.c"
     debug=False
     alone=False
-    if "--standalone" in sys.argv:
-        sys.argv.remove("--standalone")
-        alone=True
+    table_max="32"
+    index_type="uint32_t"
+    stack_max="256"
     if len(sys.argv) < 2:
         print("[ Error, at least 1 arg is needed, type with --help or with -h ]")
     arg_index=0
@@ -51,19 +55,29 @@ def main():
                 arg=sys.argv[arg_index]
                 includes.append(arg)
                 arg_index+=1
-            if arg[0]=="-":
                 continue
+        elif arg=="--stack-max":
+            arg_index+=1
+            stack_max=sys.argv[arg_index]
+            continue
+        elif arg=="--index-type":
+            arg_index+=1
+            index_type=sys.argv[arg_index]
+            continue
+        elif arg=="--table-max":
+            arg_index+=1
+            table_max=sys.argv[arg_index]
+            continue
         elif arg=="-v":
             debug=True
         arg_index+=1
     if help_flag:
         cynk_help()
     elif source is not None:
-        if alone:
-            config = {"a_or_b":"STANDALONE"}
-        else:
-            config = {"a_or_b":"ANSI"}
         config["output_filename"] = out_file
+        config["stack_max"] = stack_max
+        config["index_type"] = index_type
+        config["table_cap"] = table_max
         start = time.time()
         trans = transpiler.Transpiler(config=config, debug=debug)
         with open(source, "r") as f:
