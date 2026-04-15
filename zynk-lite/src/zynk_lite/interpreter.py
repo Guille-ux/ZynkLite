@@ -7,11 +7,12 @@ from .ast import eval
 from .ast import parser
 
 class ZynkLInterpreter:
-    def __init__(self, standard_lib_path=None, enclosing=None, debug=False, extension=".zl"):
+    def __init__(self, standard_lib_path=None, enclosing=None, debug=False, extension=".zl", comillas='"'):
         self.evaluator = eval.ZynkLEval(standard_lib_path, enclosing, debug, extension)
         self.debug = debug
+        self.comillas = comillas
     def eval(self, code):
-        lex = lexer.ZynkLLexer(code, self.debug)
+        lex = lexer.ZynkLLexer(code, self.debug, comillas=self.comillas)
         tokens = lex.scan()
         par = parser.ZynkLParser(tokens, self.debug)
         parsed = par.parse()

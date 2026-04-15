@@ -9,11 +9,14 @@ import sys
 
 
 def main():
-    if len(sys.argv) < 1:
+    if len(sys.argv) < 2:
         print("[ Error, at least 1 arg is needed ]")
     elif sys.argv[1]=="run":
         filepath = sys.argv[2]
-        interpreter = intp.ZynkLInterpreter()
+        comillas = '"'
+        if len(sys.argv) == 4:
+            comillas = sys.argv[3]
+        interpreter = intp.ZynkLInterpreter(comillas=comillas)
         interpreter.eval_file(filepath)
     # muchas más opciones
     elif sys.argv[1]=="cli":
